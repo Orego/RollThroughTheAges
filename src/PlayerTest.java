@@ -38,5 +38,15 @@ public class PlayerTest {
 		p.addGoods(10);
 		assertEquals("Resources:\nSpearheads: 4\nCloth: 5\nPottery: 6\nStone: 7\nWood: 8\nFood: 3",p.getResourcesInfo());
 	}
+	
+	@Test
+	public void testAddFood(){
+		assertEquals(3, p.getFood());
+		assertEquals(0,p.addFood(4));
+		assertEquals(7, p.getFood());
+		assertEquals(3,p.addFood(11));
+		assertEquals(15,p.getFood());
+		assertEquals(-2,p.addFood(-17));
+	}
 
 }

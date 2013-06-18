@@ -57,6 +57,14 @@ public class Player {
 			goodTypeCounter++;
 		}
 	}
+	
+	/**
+	 * @param amtFood Amount food to add.
+	 * @return The amount of food over the max or under the min.
+	 */
+	public int addFood(int amtFood){
+		return resources.changeAmount(PlayerResources.FOOD, amtFood);
+	}
 
 	/** Get a visual representation of the player's resources. */
 	public String getResourcesInfo() {
@@ -69,20 +77,36 @@ public class Player {
 				+ resources.getAmount(PlayerResources.FOOD);
 	}
 	
+	/** Returns the amount of food the player has */
+	public int getFood(){
+		return resources.getAmount(PlayerResources.FOOD);
+	}
+	
 	public static void main(String[] args) {
 		Player p = new Player();
 		System.out.println(p.getResourcesInfo());
+		System.out.println();
 		p.addGoods(3);
 		System.out.println("Added 3 goods.");
 		System.out.println(p.getResourcesInfo());
+		System.out.println();
 		p.addGoods(7);
 		System.out.println("Added 7 goods.");
 		System.out.println(p.getResourcesInfo());
+		System.out.println();
 		p.addGoods(13);
 		System.out.println("Added 13 goods.");
 		System.out.println(p.getResourcesInfo());
+		System.out.println();
 		p.addGoods(10);
 		System.out.println("Added 10 goods.");
 		System.out.println(p.getResourcesInfo());
+		
+		System.out.println("\nInitial food: "+p.getFood());
+		p.addFood(7);
+		System.out.println("Added 7 food: "+p.getFood());
+		p.addFood(10);
+		System.out.println("Added 10 food (max total is 15): "+p.getFood());
+		
 	}
 }
