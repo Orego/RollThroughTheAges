@@ -22,5 +22,12 @@ public class DieTest {
 			assertTrue(counts[i] >= 750);
 		}
 	}
+	
+	@Test
+	public void testFoodWorker() {
+		assertTrue(die.isCountedAsFood());
+		die.countAsFood(false);
+		assertFalse(die.isCountedAsFood());
+	}
 
 }
