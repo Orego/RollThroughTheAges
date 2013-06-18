@@ -45,6 +45,19 @@ public class DicePanel extends JPanel{
 		}
 	}
 	
+	/**
+	 * Get the indices of the selected dice.
+	 * @return
+	 */
+	public List<Integer> getSelectedIndices() {
+		ArrayList<Integer> ints = new ArrayList<Integer> ();
+		for (int i=0; i<dieList.size(); i++){
+			if (graphicDieList.get(i).dieIsSelected())
+				ints.add(i);
+		}
+		return ints;
+	}
+	
 	/** The exception that is thrown when too many active dice are passed at creation. */
 	private class TooManyDiceException extends RuntimeException {}
 	
