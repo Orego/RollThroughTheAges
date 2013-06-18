@@ -5,8 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /** The panel that displays all the dice. */
@@ -17,6 +19,12 @@ public class DicePanel extends JPanel{
 	
 	/** The list of all graphic dice. */
 	private List<GraphicDie> graphicDieList;
+	
+	/** Allows roll and reroll to share a rolltracker. */
+	private RollTracker roller;
+	
+	/** Informs the user of rolls left. */
+	private static JLabel rollCount;
 
 	/**
 	 * Sets up the dice display
@@ -36,6 +44,7 @@ public class DicePanel extends JPanel{
 			this.add(graphicDieList.get(i));
 		}
 		setPreferredSize(new Dimension(86*7,83));
+		roller = new RollTracker();
 	}
 
 	/** Updates the graphic dice. Should be called after dice are rolled. */
@@ -43,6 +52,19 @@ public class DicePanel extends JPanel{
 		for (int i=0; i<dieList.size(); i++){
 			graphicDieList.get(i).changeFace(dieList.get(i).getTopFace());
 		}
+	}
+	
+	/**
+	 * Get the indices of the selected dice.
+	 * @return
+	 */
+	public List<Integer> getSelectedIndices() {
+		ArrayList<Integer> ints = new ArrayList<Integer> ();
+		for (int i=0; i<dieList.size(); i++){
+			if (graphicDieList.get(i).dieIsSelected())
+				ints.add(i);
+		}
+		return ints;
 	}
 	
 	/** The exception that is thrown when too many active dice are passed at creation. */
@@ -58,9 +80,16 @@ public class DicePanel extends JPanel{
 		JPanel outerPanel = new JPanel();
 		outerPanel.setLayout(new BorderLayout());
 		outerPanel.add(dicePanel,BorderLayout.CENTER);
-		JButton roll = new JButton ("Roll");
+		JPanel buttonPanel = new JPanel();
+		JButton roll = new JButton ("Fresh roll");
 		roll.addActionListener(dicePanel.new RollListener());
-		outerPanel.add(roll,BorderLayout.SOUTH);
+		buttonPanel.add(roll);
+		JButton reroll = new JButton ("Reroll selected");
+		reroll.addActionListener(dicePanel.new RerollListener());
+		rollCount = new JLabel("Rerolls left: "+2);
+		buttonPanel.add(reroll);
+		buttonPanel.add(rollCount);
+		outerPanel.add(buttonPanel,BorderLayout.SOUTH);
 		outerPanel.setPreferredSize(new Dimension(86*7,120));
 		frame.add(outerPanel);
 		frame.pack();
@@ -70,12 +99,28 @@ public class DicePanel extends JPanel{
 	
 	//lets you roll the active dice from main method
 	private class RollListener implements ActionListener {
-		private RollTracker rolly = new RollTracker();
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			rolly.rollDice(dieList);
+			roller.rollDice(dieList);
+
+			rollCount .setText("Rerolls left: "+roller.getRerollsLeft());
 			updateGraphicDice();
+			repaint();
+		}
+		
+	}
+	
+	//lets you reroll the selected dice from main method
+	private class RerollListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			roller.reroll(getSelectedIndices(), dieList);
+
+			rollCount .setText("Rerolls left: "+roller.getRerollsLeft());
+			updateGraphicDice();
+			repaint();
 		}
 		
 	}
