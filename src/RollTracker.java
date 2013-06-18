@@ -12,7 +12,6 @@ public class RollTracker {
 		skulls = 0;
 		workers = 0;
 		coin = 0;
-
 		for (int i = 0; i<dice.size(); i++){
 			dice.get(i).roll();
 			switch (dice.get(i).getTopFace()){
@@ -59,8 +58,7 @@ public class RollTracker {
 	public int getCoin(){
 		return coin;
 	}
-	
-	
+
 	public static void main(String[] args){
 		RollTracker roll = new RollTracker();
 		ArrayList<Die> dice = new ArrayList<Die>();
@@ -79,4 +77,5 @@ public class RollTracker {
 		System.out.println("Skulls = " + roll.getSkulls());
 		System.out.println("Food = " + roll.getFood());
 	}
+
 }

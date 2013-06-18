@@ -1,8 +1,11 @@
 public class PlayerResources {
+	
 	public static final int FOOD = 5, WOOD = 0, STONE = 1, POTTERY = 2,
 			CLOTH = 3, SPEARHEADS = 4;
-	private int[] resourceArray = new int[6];
-	public static final String[] resourceTypes = {
+	
+	private int[] resourceArray;
+	
+	public static final String[] RESOURCE_NAMES = {
 		"wood",
 		"stone",
 		"pottery",
@@ -12,6 +15,7 @@ public class PlayerResources {
 	};
 	
 	public PlayerResources() {
+		resourceArray = new int[6];
 		resourceArray[FOOD] = 3;
 	}
 
@@ -28,7 +32,7 @@ public class PlayerResources {
 	public static void main(String[] args) {
 		PlayerResources r = new PlayerResources();
 		for (int i = 0; i <= 5; i++) {
-			System.out.println(resourceTypes[i] + " " + r.getAmount(i));
+			System.out.println(RESOURCE_NAMES[i] + " " + r.getAmount(i));
 		}
 	}
 
