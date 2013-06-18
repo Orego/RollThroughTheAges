@@ -1,12 +1,29 @@
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
-
+/** Rolls dice and counts all goods, skulls, workers, food, and coins. */
 public class RollTracker {
 	
-	private int food, goods, skulls, workers, coin;
+	/** The amount of food most recently rolled. */
+	private int food;
 	
-	public void rollDice(ArrayList<Die> dice){
+	/** The amount of goods most recently rolled. */
+	private int goods;
+	
+	/** The amount of skulls most recently rolled. */
+	private int skulls;
+	
+	/** The amount of workers most recently rolled. */
+	private int workers;
+	
+	/** The amount of coin most recently rolled. */
+	private int coin;
+	
+	/**
+	 * Rolls the given list of dice.
+	 * @param dice The list of dice.
+	 */
+	public void rollDice(List<Die> dice){
 		food = 0;
 		goods = 0;
 		skulls = 0;
@@ -39,22 +56,37 @@ public class RollTracker {
 		}
 	}
 	
+	/**
+	 * @return The amount of food most recently rolled.
+	 */
 	public int getFood(){
 		return food;
 	}
 	
+	/**
+	 * @return The amount of goods most recently rolled.
+	 */
 	public int getGoods(){
 		return goods;
 	}
 	
+	/**
+	 * @return The amount of skulls most recently rolled.
+	 */
 	public int getSkulls(){
 		return skulls;
 	}
 	
+	/**
+	 * @return The amount of workers most recently rolled.
+	 */
 	public int getWorkers(){
 		return workers;
 	}
 	
+	/**
+	 * @return The amount of coin most recently rolled.
+	 */
 	public int getCoin(){
 		return coin;
 	}
