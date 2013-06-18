@@ -4,7 +4,10 @@ public class Player {
 	public Player() {
 		initializeCities();
 	}
-
+	
+	/** Set each player starts with 7 total cities with 3 full and 4 
+	 *  with the correct number of max workers
+	 */
 	private void initializeCities() {
 		cities[0] = new City(0);
 		cities[1] = new City(0);
@@ -13,9 +16,9 @@ public class Player {
 		cities[4] = new City(4);
 		cities[5] = new City(5);
 		cities[6] = new City(6);
-
 	}
-
+	
+	/** Returns the number of full cities*/
 	public int getNumCities() {
 		int count = 0;
 		for (City c : cities) {
@@ -25,9 +28,13 @@ public class Player {
 		}
 		return count;
 	}
-
-//	public void buyCityWorkers(int numWorkers) {
-//		// TODO Auto-generated method stub
-//
-//	}
+	
+	/** Return the city with this index*/
+	public City getCity(int i) {
+		return cities[i];
+	}
+	
+	public void buyCityWorkers(int workers, int city) {
+		cities[city].addWorkers(workers);
+	}
 }
