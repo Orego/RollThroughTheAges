@@ -1,5 +1,8 @@
+import java.util.ArrayList;
+
 public class Player {
 	private City[] cities = new City[7];
+//	private ArrayList<Development> developments;
 
 	public Player() {
 		initializeCities();
