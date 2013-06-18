@@ -101,7 +101,6 @@ public class RollTracker {
 	 * @return Returns true if reroll was possible
 	 */
 	public boolean reroll(List<Integer> indices, List<Die> dice) throws FlippedSkullException {
-		
 		if (rerollCount > 1 || indices == null || indices.isEmpty())// rerollCount will be 0 1st
 													// time and 1 2nd
 			return false;

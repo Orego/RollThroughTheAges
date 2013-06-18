@@ -40,7 +40,6 @@ public class GraphicDie extends JButton {
 	public GraphicDie(int initialTopFace, boolean inUse) {
 		topFace = initialTopFace;
 		setIcon(DIE_IMAGES[initialTopFace]);
-		System.out.println(DIE_IMAGES[initialTopFace]);
 		this.setInUse(inUse);
 		this.setPreferredSize(new Dimension(86, 83));
 		this.addActionListener(new SelectedListener());
