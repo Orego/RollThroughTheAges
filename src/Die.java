@@ -30,6 +30,7 @@ public class Die {
 	
 	public Die() {
 		countAsFood = true;
+		roll();
 	}
 
 	/** Rolls this die. */
