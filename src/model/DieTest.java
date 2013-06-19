@@ -1,6 +1,5 @@
-package tests;
+package model;
 import static org.junit.Assert.*;
-import models.Die;
 
 import org.junit.Before;
 import org.junit.Test;

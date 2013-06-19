@@ -1,4 +1,4 @@
-package views;
+package view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.border.Border;
 
-import models.Die;
+import model.Die;
 
 /** The class that displays a single die. */
 public class GraphicDie extends JButton {

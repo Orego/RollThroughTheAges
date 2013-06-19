@@ -1,5 +1,6 @@
-package models;
+package model;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /** This class keeps track of game states and coordinates interactions among classes. */
@@ -7,6 +8,9 @@ public class Game {
 	
 	/** The list of players. */
 	private ArrayList<Player> players;
+	
+	/** holds whose turn it is */
+	private int currentplayer;
 	
 	/**
 	 * 
@@ -18,6 +22,8 @@ public class Game {
 		for(int i = 0; i < playerNames.length; i++) {
 			players.add(new Player(playerNames[i].trim()));
 		}
+		
+		
 	}
 	
 	/** Returns information about players 1,2,3, or 4. */
@@ -25,9 +31,51 @@ public class Game {
 		return players.get(i-1);
 	}
 	
-	/** Returns the number of players. */
+
+	/** Get the total number of players in the game */
 	public int getNumPlayers() {
 		return players.size();
+	}
+	
+	/** Return who's turn is it?*/
+	public int getCurrentPlayer(){
+		return currentplayer; 
+	}
+	
+	/** Ends the current turn & starts next one */
+	public void nextTurn(){
+		currentplayer = (currentplayer + 1)%(players.size());
+	}
+	
+	/** Returns a players dice list */
+	public List<Die> getPlayersDice(int player){
+		return players.get(player).getPlayersDice();
+	}
+	
+	/**
+	 * Do the first roll for a player
+	 * @param player the index of the player
+	 * @return the list of dice
+	 */
+	public List<Die> rollPlayersDice(int player){
+		players.get(player).doFirstRoll();
+		return players.get(player).getPlayersDice();
+	}
+	
+	/** 
+	 * Rerolls the players dice
+	 * @param player the index of the player
+	 * @param indices the list of indices of the dice
+	 * @return the list of dice
+	 */
+	public List<Die> rerollPlayersDice(int player,List<Integer> indices){
+		players.get(player).rerollDice(indices);
+		return players.get(player).getPlayersDice();
+	}
+	
+	/** Returns the number of rerolls a player has left */
+	public int getPlayersNumRerolls(int player){
+		return players.get(player).getRerollsLeft();
 	}
 	
 	/** Returns the player names in a string separated by commas. */

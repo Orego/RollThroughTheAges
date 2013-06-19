@@ -1,4 +1,4 @@
-package models;
+package model;
 /** A die for the Roll Through the Ages game. */
 public class Die {
 

@@ -1,6 +1,9 @@
-package models;
+package model;
+
 
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 /** This class stores information about a single player. */
 public class Player {
@@ -13,6 +16,12 @@ public class Player {
 
 	/** The player's name. */
 	private String name;
+	
+	/** Holds the list of dice that the player is allowed to use */
+	private ArrayList<Die> dice;
+	
+	/** Holds the rolltracker for the dice */
+	private RollTracker roller;
 
 	/**
 	 * @param name The player's name
@@ -20,6 +29,11 @@ public class Player {
 	public Player(String name) {
 		this.name = name;
 		initializeCities();
+		dice = new ArrayList<Die>();
+		for (int i = 0; i < 3; i++){
+			dice.add(new Die());
+		}
+		roller = new RollTracker();
 	}
 	 /** Returns the player's name. */
 	public String getName(){
@@ -39,7 +53,44 @@ public class Player {
 		cities[5] = new City(5);
 		cities[6] = new City(6);
 	}
-
+	
+	/** Returns the list of dice that the player can roll */
+	public List<Die> getPlayersDice(){
+		return dice;
+	}
+	
+	/** Does the first roll of the players turn */
+	public void doFirstRoll(){
+		roller.rollDice(dice);
+	}
+	
+	/**
+	 * Reroll the dice
+	 * 
+	 * @param diceToRoll the indices of the dice
+	 * @return true if reroll was possible.
+	 */
+	public boolean rerollDice(List<Integer> diceToRoll){
+		return roller.reroll(diceToRoll, dice);
+	}
+	
+	/** Get the rerolls left */
+	public int getRerollsLeft(){
+		return roller.getRerollsLeft();
+	}
+	
+	/** Adds a die to the players dice list */
+	public void addDie() throws AddedTooManyDiceException {
+		if (dice.size() >= 7) throw new AddedTooManyDiceException();
+		else dice.add(new Die());
+	}
+	
+	/** Thrown when program tries to add more than 7 dice */
+	private class AddedTooManyDiceException extends RuntimeException{
+		
+		private static final long serialVersionUID = 1L;
+	}
+	
 	/** Returns the number of full cities */
 	public int getNumCities() {
 		int count = 0;
@@ -56,6 +107,13 @@ public class Player {
 		return cities[i];
 	}
 
+	/** 
+	 * Adds workers to a particular city
+	 * NOTE: needs work....
+	 * 
+	 * @param workers the amount of workers added
+	 * @param city the city number
+	 */
 	public int buyCityWorkers(int workers, int city) {
 		return cities[city].addWorkers(workers);
 	}
@@ -97,7 +155,7 @@ public class Player {
 	public int getFood(){
 		return resources.getAmount(PlayerResources.FOOD);
 	}
-	
+
 	public static void main(String[] args) {
 		Player p = new Player("");
 		System.out.println(p.getResourcesInfo());
@@ -136,6 +194,5 @@ public class Player {
 		System.out.print("\nChoose a player name: ");
 		p = new Player(scan.nextLine());
 		System.out.println("Hello player "+p.getName());
-		
 	}
 }

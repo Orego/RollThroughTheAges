@@ -1,4 +1,4 @@
-package models;
+package model;
 import java.util.ArrayList;
 
 public class DevelopmentList {
