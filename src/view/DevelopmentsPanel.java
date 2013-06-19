@@ -51,6 +51,7 @@ public class DevelopmentsPanel extends JPanel {
 		JLabel label;
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
 
 		label = new JLabel(developmentIcon);
 		c.gridx = 0;
@@ -71,11 +72,13 @@ public class DevelopmentsPanel extends JPanel {
 		add(label, c);
 
 		label = new JLabel("Pts");
+		c.fill = GridBagConstraints.NONE;
 		c.gridx = 3;
 		c.gridy = 1;
 		add(label, c);
 
 		label = new JLabel("Effect");
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 4;
 		c.gridy = 1;
 		add(label, c);
@@ -96,11 +99,13 @@ public class DevelopmentsPanel extends JPanel {
 			add(label, c);
 
 			label = new JLabel("" + DevelopmentList.DEVELOPMENT_POINTS[i]);
+			c.fill = GridBagConstraints.NONE;
 			c.gridx = 3;
 			c.gridy = i + 2;
 			add(label, c);
 
 			label = new JLabel(DevelopmentList.DEVELOPMENT_EFFECTS[i]);
+			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridx = 4;
 			c.gridy = i + 2;
 			add(label, c);
