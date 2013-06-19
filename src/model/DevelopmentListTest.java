@@ -14,12 +14,21 @@ public class DevelopmentListTest {
 	public void setUp() throws Exception {
 		d = new DevelopmentList(); 	
 	}
+	
 	@Test
 	public void test() {
 		assertFalse(d.isDevelopmentBought(DevelopmentList.RELIGION));
 		d.buyDevelopment(DevelopmentList.COINAGE);
 		assertTrue(d.isDevelopmentBought(DevelopmentList.COINAGE));
 		assertFalse(d.getAvailableDevelopments().contains(new Integer(DevelopmentList.COINAGE)));
+	}
+	
+	public void testScore() {
+		assertEquals(0,d.getDevelopmentsTotalScore());
+		d.buyDevelopment(DevelopmentList.ARCHITECTURE);
+		assertEquals(8,d.getDevelopmentsTotalScore());
+		d.buyDevelopment(DevelopmentList.ENGINEERING);
+		assertEquals(14,d.getDevelopmentsTotalScore());
 	}
 
 }

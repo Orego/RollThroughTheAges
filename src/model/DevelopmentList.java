@@ -86,6 +86,17 @@ public class DevelopmentList {
 				+ DEVELOPMENT_POINTS[development] + ".";
 		return str;
 	}
+	
+	/** Returns the total score from bought developments. */
+	public int getDevelopmentsTotalScore (){
+		int score = 0;
+		for (int i=0; i<developmentArray.length; i++){
+			if (developmentArray[i]){
+				score+=DEVELOPMENT_POINTS[i];
+			}
+		}
+		return score;
+	}
 
 	public static void main(String[] args) {
 		DevelopmentList d = new DevelopmentList();

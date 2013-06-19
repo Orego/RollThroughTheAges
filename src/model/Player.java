@@ -24,11 +24,14 @@ public class Player {
 
 	/** Holds the rolltracker for the dice */
 	private RollTracker roller;
-	
 
-	private int totalScore, disasterCount;
+	/** The player's total score. */
+	private int totalScore;
 
-	/** Holds the list of developments the plaayer holds */
+	/** The player's disaster count. */
+	private int disasterCount;
+
+	/** Holds the list of developments the player holds. */
 	private DevelopmentList developments;
 
 	/**
@@ -47,8 +50,52 @@ public class Player {
 		developments = new DevelopmentList();
 	}
 
+	/** Returns the player's total score. */
+	public int getTotalScore() {
+		return developments.getDevelopmentsTotalScore() + getMonumentsScores()
+				+ getBonuses() - disasterCount;
+	}
+
+	/** Returns the score from bonuses (gotten through architecture/empire developments). */
+	private int getBonuses() {
+		int bonus = 0;
+		if (developments.isDevelopmentBought(DevelopmentList.ARCHITECTURE)) {
+			for (int i = 0; i < monuments.length; i++) {
+				if (monuments[i].isFull()) {
+					bonus++;
+				}
+			}
+		}
+		if (developments.isDevelopmentBought(DevelopmentList.EMPIRE)) {
+			for (int i = 0; i < cities.length; i++) {
+				if (cities[i].isFull()) {
+					bonus++;
+				}
+			}
+		}
+		return bonus;
+	}
+	
+	public void buyDevelopment(int development){
+		developments.buyDevelopment(development);
+	}
+
+	/** Returns the score from monuments built. */
+	private int getMonumentsScores() {
+		int i2 = 0;
+		for (int i = 0; i < monuments.length; i++) {
+			i2 += monuments[i].getScore();
+		}
+		return i2;
+	}
+	
+	/** Updates disaster count. */
+	public void addDisasters(int numDisastersToAdd){
+		disasterCount+=numDisastersToAdd;
+	}
+
 	/**
-	 * Sets up the right monuments depending on number of players. For 1 player
+	 * Sets up the right monuments depending on number of players. For 1-player
 	 * game, ignores all occasionally blocked monuments.
 	 */
 	private void initializeMonuments(int numPlayers) {
@@ -70,9 +117,9 @@ public class Player {
 	public String getName() {
 		return name;
 	}
-	
+
 	/** Returns the player's list of developments */
-	public DevelopmentList getDevelopementList(){
+	public DevelopmentList getDevelopementList() {
 		return developments;
 	}
 
@@ -211,13 +258,14 @@ public class Player {
 	}
 
 	public static void main(String[] args) {
-		Player p = new Player("",2);
-		System.out.println("There are 2 players, so you have 5 monuments to build:");
+		Player p = new Player("", 2);
+		System.out
+				.println("There are 2 players, so you have 5 monuments to build:");
 		System.out.println(p.getMonumentsInfo());
 		System.out.println("Build the second monument:");
 		p.buyMonumentWorkers(5, 1);
-		System.out.println(p.getMonumentsInfo()+"\n");
-		
+		System.out.println(p.getMonumentsInfo() + "\n");
+
 		p = new Player("", 1);
 		System.out.println(p.getResourcesInfo());
 		System.out.println();
@@ -253,12 +301,18 @@ public class Player {
 				.println("Num workers left after we add 4 workers to city #4 (max population = 3)? "
 						+ p.getCity(3).addWorkers(4));
 		System.out.println("Is City #4 full? " + p.getCity(3).isFull());
+		
+		p = new Player("",1);
+		System.out.println("\nTotal score for new player: "+p.getTotalScore());
+		p.buyDevelopment(DevelopmentList.EMPIRE);
+		System.out.println("Buy empire (8 + 1 bonus/city): "+p.getTotalScore());
+		p.addDisasters(2);
+		System.out.println("Lost two disaster points: "+p.getTotalScore());
 
 		Scanner scan = new Scanner(System.in);
 		System.out.print("\nChoose a player name: ");
 		p = new Player(scan.nextLine(), 1);
 		System.out.println("Hello player " + p.getName());
-		
-		
+
 	}
 }

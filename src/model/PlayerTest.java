@@ -97,5 +97,19 @@ public class PlayerTest {
 						+ " Cur pop: 13; Score: 10\nMax pop: 15; Cur pop: 15; Score: 12\n",
 				p.getMonumentsInfo());
 	}
+	
+	@Test
+	public void testTotalScore(){
+		p = new Player("",1);
+		assertEquals(0,p.getTotalScore());
+		p.buyDevelopment(DevelopmentList.ARCHITECTURE);
+		assertEquals(8,p.getTotalScore());
+		p.buyMonumentWorkers(3, 0);
+		assertEquals(10,p.getTotalScore());
+		p.buyDevelopment(DevelopmentList.EMPIRE);
+		assertEquals(21,p.getTotalScore());
+		p.addDisasters(3);
+		assertEquals(18,p.getTotalScore());
+	}
 
 }
