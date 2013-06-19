@@ -93,6 +93,11 @@ public class Player {
 	public void addDisasters(int numDisastersToAdd){
 		disasterCount+=numDisastersToAdd;
 	}
+	
+	/** Returns disaster count. */
+	public int getDisasterCount(){
+		return disasterCount;
+	}
 
 	/**
 	 * Sets up the right monuments depending on number of players. For 1-player
@@ -308,6 +313,7 @@ public class Player {
 		System.out.println("Buy empire (8 + 1 bonus/city): "+p.getTotalScore());
 		p.addDisasters(2);
 		System.out.println("Lost two disaster points: "+p.getTotalScore());
+		System.out.println("Num disaster points: "+p.getDisasterCount());
 
 		Scanner scan = new Scanner(System.in);
 		System.out.print("\nChoose a player name: ");
