@@ -2,30 +2,34 @@ package models;
 
 public class City {
 	private int maxPop, curPop;
-	
-	public City(int maxPopulation){
+
+	public City(int maxPopulation) {
 		maxPop = maxPopulation;
 	}
-	
-	public boolean isFull(){
+
+	public boolean isFull() {
 		return curPop == maxPop;
 	}
-	
-	//doesn't check that this is possible
-	public boolean addWorkers(int numWorkersToAdd) {
+
+	/**
+	 * Adds workers or returns the amount of workers over the max population of
+	 * the city. Precondition: numWorkersToAdd is positive.
+	 */
+	public int addWorkers(int numWorkersToAdd) {
 		if (numWorkersToAdd > (maxPop - curPop)) {
-			System.out.println("Warning: workers not added - tried to add more workers than remaining slots in city");
-			return false;
+			numWorkersToAdd -= maxPop - curPop;
+			curPop = maxPop;
+			return numWorkersToAdd;
 		}
-		curPop+=numWorkersToAdd;
-		return true;		
+		curPop += numWorkersToAdd;
+		return 0;
 	}
-	
-	public int currentPopulation(){
+
+	public int currentPopulation() {
 		return curPop;
 	}
-	
-	public int maxPopulation(){
+
+	public int maxPopulation() {
 		return maxPop;
 	}
 }

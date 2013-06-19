@@ -82,7 +82,8 @@ public class DicePanel extends JPanel{
 	// shows how dice look
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
-		DicePanel dicePanel = new DicePanel( new Game(4));
+		String[] names = {"a","b","c","d"};
+		DicePanel dicePanel = new DicePanel( new Game(names));
 		JPanel outerPanel = new JPanel();
 		outerPanel.setLayout(new BorderLayout());
 		outerPanel.add(dicePanel,BorderLayout.CENTER);
