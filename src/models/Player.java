@@ -1,5 +1,4 @@
 package models;
-import java.util.ArrayList;
 
 public class Player {
 	private City[] cities = new City[7];
@@ -41,8 +40,8 @@ public class Player {
 		return cities[i];
 	}
 
-	public void buyCityWorkers(int workers, int city) {
-		cities[city].addWorkers(workers);
+	public int buyCityWorkers(int workers, int city) {
+		return cities[city].addWorkers(workers);
 	}
 
 	/** Add the specified number of goods to the player's resources. */
@@ -103,11 +102,19 @@ public class Player {
 		System.out.println("Added 10 goods.");
 		System.out.println(p.getResourcesInfo());
 		
+		p = new Player();
 		System.out.println("\nInitial food: "+p.getFood());
 		p.addFood(7);
 		System.out.println("Added 7 food: "+p.getFood());
 		p.addFood(10);
 		System.out.println("Added 10 food (max total is 15): "+p.getFood());
+		
+		p = new Player();
+		System.out.println("\nThere should be three cities initially: "+p.getNumCities());
+		System.out.println("Is City #1 full? " + p.getCity(0).isFull());
+		System.out.println("Is City #4 full? " + p.getCity(3).isFull());
+		System.out.println("Num workers left after we add 4 workers to city #4 (max population = 3)? " + p.getCity(3).addWorkers(4));
+		System.out.println("Is City #4 full? " + p.getCity(3).isFull());
 		
 	}
 }
