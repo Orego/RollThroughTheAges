@@ -25,7 +25,11 @@ public class Player {
 	/** Holds the rolltracker for the dice */
 	private RollTracker roller;
 	
+
 	private int totalScore, disasterCount;
+
+	/** Holds the list of developments the plaayer holds */
+	private DevelopmentList developments;
 
 	/**
 	 * @param name
@@ -40,6 +44,7 @@ public class Player {
 			dice.add(new Die());
 		}
 		roller = new RollTracker();
+		developments = new DevelopmentList();
 	}
 
 	/**
@@ -64,6 +69,11 @@ public class Player {
 	/** Returns the player's name. */
 	public String getName() {
 		return name;
+	}
+	
+	/** Returns the player's list of developments */
+	public DevelopmentList getDevelopementList(){
+		return developments;
 	}
 
 	/**

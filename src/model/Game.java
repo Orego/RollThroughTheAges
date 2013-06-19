@@ -46,11 +46,16 @@ public class Game {
 	public void nextTurn(){
 		currentplayer = (currentplayer + 1)%(players.size());
 	}
+
+	public DevelopmentList getPlayersDevelopmentList(int player){
+		return players.get(player).getDevelopementList();
+	}
 	
 	/** Returns a players dice list */
 	public List<Die> getPlayersDice(int player){
 		return players.get(player).getPlayersDice();
 	}
+	
 	
 	/**
 	 * Do the first roll for a player
