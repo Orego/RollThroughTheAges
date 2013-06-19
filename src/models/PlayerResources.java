@@ -1,3 +1,5 @@
+package models;
+
 /**
  * This class keeps track of a player's resources
  */

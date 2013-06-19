@@ -1,3 +1,4 @@
+package models;
 
 public class City {
 	private int maxPop, curPop;
