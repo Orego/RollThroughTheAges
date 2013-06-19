@@ -1,4 +1,4 @@
-package views;
+package view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -12,9 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import models.Die;
-import models.Game;
-import models.RollTracker;
+import model.Die;
+import model.Game;
+import model.RollTracker;
 
 /** The panel that displays all the dice. */
 public class DicePanel extends JPanel{
