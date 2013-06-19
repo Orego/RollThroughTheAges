@@ -13,7 +13,7 @@ public class PlayerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		p = new Player();
+		p = new Player("example");
 	}
 
 	@Test
@@ -48,6 +48,12 @@ public class PlayerTest {
 		assertEquals(3,p.addFood(11));
 		assertEquals(15,p.getFood());
 		assertEquals(-2,p.addFood(-17));
+	}
+	
+	@Test
+	public void testPlayerNames() {
+		p = new Player("hi");
+		assertEquals("hi",p.getName());
 	}
 
 }

@@ -1,13 +1,29 @@
 package models;
 
+import java.util.Scanner;
+
+/** This class stores information about a single player. */
 public class Player {
+	
+	/** The cities associated with this player. */
 	private City[] cities = new City[7];
+	
+	/** The resources associated with this player. */
 	private PlayerResources resources = new PlayerResources();
 
-	// private ArrayList<Development> developments;
+	/** The player's name. */
+	private String name;
 
-	public Player() {
+	/**
+	 * @param name The player's name
+	 */
+	public Player(String name) {
+		this.name = name;
 		initializeCities();
+	}
+	 /** Returns the player's name. */
+	public String getName(){
+		return name;
 	}
 
 	/**
@@ -83,7 +99,7 @@ public class Player {
 	}
 	
 	public static void main(String[] args) {
-		Player p = new Player();
+		Player p = new Player("");
 		System.out.println(p.getResourcesInfo());
 		System.out.println();
 		p.addGoods(3);
@@ -102,19 +118,24 @@ public class Player {
 		System.out.println("Added 10 goods.");
 		System.out.println(p.getResourcesInfo());
 		
-		p = new Player();
+		p = new Player("");
 		System.out.println("\nInitial food: "+p.getFood());
 		p.addFood(7);
 		System.out.println("Added 7 food: "+p.getFood());
 		p.addFood(10);
 		System.out.println("Added 10 food (max total is 15): "+p.getFood());
 		
-		p = new Player();
+		p = new Player("");
 		System.out.println("\nThere should be three cities initially: "+p.getNumCities());
 		System.out.println("Is City #1 full? " + p.getCity(0).isFull());
 		System.out.println("Is City #4 full? " + p.getCity(3).isFull());
 		System.out.println("Num workers left after we add 4 workers to city #4 (max population = 3)? " + p.getCity(3).addWorkers(4));
 		System.out.println("Is City #4 full? " + p.getCity(3).isFull());
+		
+		Scanner scan = new Scanner (System.in);
+		System.out.print("\nChoose a player name: ");
+		p = new Player(scan.nextLine());
+		System.out.println("Hello player "+p.getName());
 		
 	}
 }

@@ -13,10 +13,10 @@ public class GameTest {
 
 	@Before
 	public void setUp() throws Exception {
-		g1 = new Game(1);
-		g2 = new Game(2);
-		g3 = new Game(3);
-		g4 = new Game(4);
+		g1 = new Game(new String[] {"blah"});
+		g2 = new Game(new String[] {"blah","blah 1"});
+		g3 = new Game(new String[] {"blah","Blah","blah 1"});
+		g4 = new Game(new String[] {"blah","2","3","4"});
 	}
 	
 	@Test
@@ -35,6 +35,9 @@ public class GameTest {
 			g4.getPlayer(i);
 		}
 		assertEquals(4,g4.getNumPlayers());
+		
+		assertEquals("blah",g1.getPlayerNames());
+		assertEquals("blah, 2, 3, 4",g4.getPlayerNames());
 	}
 
 }
