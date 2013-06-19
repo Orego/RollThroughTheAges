@@ -24,6 +24,8 @@ public class Player {
 
 	/** Holds the rolltracker for the dice */
 	private RollTracker roller;
+	
+	private int totalScore, disasterCount;
 
 	/**
 	 * @param name
