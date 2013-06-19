@@ -1,4 +1,4 @@
-package views;
+package view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import models.PlayerResources;
+import model.PlayerResources;
 /** This class displays resources graphically. */
 public class ResourcesPanel extends JPanel {
 
