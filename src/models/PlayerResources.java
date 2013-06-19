@@ -1,3 +1,4 @@
+package models;
 public class PlayerResources {
 	
 	public static final int FOOD = 5, WOOD = 0, STONE = 1, POTTERY = 2,
