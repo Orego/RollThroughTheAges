@@ -20,6 +20,7 @@ public class GameTest {
 	
 	@Test
 	public void test() {
+		//make sure no exceptions get thrown
 		assertEquals(1,g1.getNumPlayers());
 		g1.getPlayer(1);
 		for(int i=1;i<=2;i++){
