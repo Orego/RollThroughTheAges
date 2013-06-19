@@ -110,6 +110,7 @@ public class PlayerTest {
 		assertEquals(21,p.getTotalScore());
 		p.addDisasters(3);
 		assertEquals(18,p.getTotalScore());
+		assertEquals(3,p.getDisasterCount());
 	}
 
 }

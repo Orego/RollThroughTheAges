@@ -21,7 +21,7 @@ public class Game {
 
 	public static final String[] TURN_PARTS = {
 			"Roll dice and collect goods and food",
-			"Feed cities revolve disasters",
+			"Feed cities resolve disasters",
 			"Build cities and / or monumentes", "Option to buy 1 development",
 			"Discard goods in excess of 6" };
 

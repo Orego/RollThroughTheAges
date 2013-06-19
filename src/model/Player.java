@@ -93,6 +93,11 @@ public class Player {
 	public void addDisasters(int numDisastersToAdd){
 		disasterCount+=numDisastersToAdd;
 	}
+	
+	/** Returns disaster count. */
+	public int getDisasterCount(){
+		return disasterCount;
+	}
 
 	/**
 	 * Sets up the right monuments depending on number of players. For 1-player
@@ -206,10 +211,16 @@ public class Player {
 		return cities[city].addWorkers(workers);
 	}
 
+	/**
+	 * @param workers The number of workers to add to the specified monument.
+	 * @param monument The index associated with the monument.
+	 * @return The number of workers over the monument's upper limit.
+	 */
 	public int buyMonumentWorkers(int workers, int monument) {
 		return monuments[monument].addWorkers(workers);
 	}
 
+	/** Returns a string containing information about all monuments. */
 	public String getMonumentsInfo() {
 		String str = "";
 		for (Structure s : monuments) {
@@ -315,6 +326,7 @@ public class Player {
 		System.out.println("Buy empire (8 + 1 bonus/city): "+p.getTotalScore());
 		p.addDisasters(2);
 		System.out.println("Lost two disaster points: "+p.getTotalScore());
+		System.out.println("Num disaster points: "+p.getDisasterCount());
 
 		Scanner scan = new Scanner(System.in);
 		System.out.print("\nChoose a player name: ");
