@@ -24,6 +24,15 @@ public class DevelopmentList {
 			"caravans", "religion", "granaries", "masonry", "engineering",
 			"architecture", "empire"
 	};
+	
+	/** The effects */
+	public static final String[] DEVELOPMENT_EFFECTS = {
+		"reroll 1 die (after last roll)", "drought has no effect", "+1 food / food die", 
+		"+1 stone if collect stone", "persilance has no effect", "coin die results are worth 12",
+		"no need to discard gods", "revolt affects opponents", "sell food for 4 coins each",
+		"+1 worker / worker die", "use stone for 3 wrkers each", "bonus points: 1 / monument",
+		"bonus points 1 / city"
+	};
 
 	/** The costs associated with the developments. */
 	public static final int[] DEVELOPMENT_COSTS = { 10, 10, 15, 15, 15, 20, 20,
