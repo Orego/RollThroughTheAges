@@ -217,6 +217,13 @@ public class Player {
 		}
 		return str;
 	}
+	
+	public boolean[] getMonumentsPlayerHas(){
+		boolean[] b = new boolean[monuments.length]; 
+		for (int i=0; i<monuments.length; i++)
+			b[i] = monuments[i].isFull();
+		return b;
+	}
 
 	/** Add the specified number of goods to the player's resources. */
 	public void addGoods(int numGoods) {

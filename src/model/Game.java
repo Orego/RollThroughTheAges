@@ -38,6 +38,28 @@ public class Game {
 		}
 
 	}
+	
+	private boolean isEndofGame(){
+		int[] monumentCheck = new int[getPlayer(0).getMonumentsPlayerHas().length];
+		for (int i = 0; i < players.size(); i++){
+			if (getPlayer(i).getDevelopementList().getAvailableDevelopments().size() <= 8){
+				return true;
+			}
+			boolean[] listOfMonuments = getPlayer(i).getMonumentsPlayerHas();
+			for (int j = 0; j<listOfMonuments.length; j++){
+				if (listOfMonuments[j])
+					monumentCheck[j] = 1;
+			}
+		}
+		int sum = 0;
+		for (int i = 0; i < getPlayer(0).getMonumentsPlayerHas().length; i++){
+			sum += monumentCheck[i];
+		}
+		if (sum == getPlayer(0).getMonumentsPlayerHas().length){
+			return true;
+		}
+		return false;
+	}
 
 	/** Returns information about players 1,2,3, or 4. */
 	public Player getPlayer(int i) {
@@ -59,9 +81,15 @@ public class Game {
 		return current_turn_part;
 	}
 
-	/** Ends the current turn & starts next one */
-	public void nextTurn() {
+	/** Ends the current turn & starts next one
+	 * Returns false if the game is ended.
+	 *  */
+	public boolean nextTurn() {
 		currentplayer = (currentplayer + 1) % (players.size());
+		if((currentplayer == 0) && isEndofGame()){
+			return false;
+		}
+		return true;
 	}
 	
 	public void nextTurnPart() {
@@ -139,5 +167,6 @@ public class Game {
 		System.out.println("this game has the following number of player(s): "
 				+ g.getNumPlayers());
 		System.out.println("Their names are " + g.getPlayerNames());
+		
 	}
 }
