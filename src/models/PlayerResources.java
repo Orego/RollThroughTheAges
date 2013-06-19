@@ -68,6 +68,13 @@ public class PlayerResources {
 		resourceArray[typeGood] += increment;
 		return 0;
 	}
+	
+	/** Returns the worth of the type of good.  If food, assumes granaries development applies. */
+	public int worthOf(int typeGood){
+		if (typeGood == FOOD)
+			return resourceArray[typeGood]*4;
+		return (typeGood+1)*(resourceArray[typeGood]*resourceArray[typeGood]+resourceArray[typeGood])/2;
+	}
 
 	public static void main(String[] args) {
 		PlayerResources r = new PlayerResources();
