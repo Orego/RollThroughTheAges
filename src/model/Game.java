@@ -20,7 +20,7 @@ public class Game {
 		
 		players = new ArrayList<Player>();
 		for(int i = 0; i < playerNames.length; i++) {
-			players.add(new Player(playerNames[i].trim()));
+			players.add(new Player(playerNames[i].trim(),playerNames.length));
 		}
 		
 		

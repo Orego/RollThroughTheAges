@@ -1,25 +1,27 @@
 package model;
 
-
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
 /** This class stores information about a single player. */
 public class Player {
-	
+
 	/** The cities associated with this player. */
-	private City[] cities = new City[7];
-	
+	private Structure[] cities;
+
+	/** The monuments associated with the player. */
+	private Structure[] monuments;
+
 	/** The resources associated with this player. */
 	private PlayerResources resources = new PlayerResources();
 
 	/** The player's name. */
 	private String name;
-	
+
 	/** Holds the list of dice that the player is allowed to use */
 	private ArrayList<Die> dice;
-	
+
 	/** Holds the rolltracker for the dice */
 	private RollTracker roller;
 	
@@ -27,21 +29,42 @@ public class Player {
 	private DevelopmentList developments;
 
 	/**
-	 * @param name The player's name
+	 * @param name
+	 *            The player's name
 	 */
-	public Player(String name) {
+	public Player(String name, int numPlayers) {
 		this.name = name;
 		initializeCities();
+		initializeMonuments(numPlayers);
 		dice = new ArrayList<Die>();
-		for (int i = 0; i < 3; i++){
+		for (int i = 0; i < 3; i++) {
 			dice.add(new Die());
 		}
 		roller = new RollTracker();
 		developments = new DevelopmentList();
 	}
-	
-	 /** Returns the player's name. */
-	public String getName(){
+
+	/**
+	 * Sets up the right monuments depending on number of players. For 1 player
+	 * game, ignores all occasionally blocked monuments.
+	 */
+	private void initializeMonuments(int numPlayers) {
+		monuments = new Structure[3 + numPlayers];
+
+		monuments[0] = new Structure(3, 1);
+		int backwards = 0;
+		for (int i = 1; i < 7; i++) {
+			if ((numPlayers < 3 && (i == 2 || i == 6))
+					|| (numPlayers % 2 != 0 && i == 4)) {
+				backwards++;
+				continue;
+			}
+			monuments[i - backwards] = new Structure(3 + 2 * i, 2 * i);
+		}
+	}
+
+	/** Returns the player's name. */
+	public String getName() {
 		return name;
 	}
 	
@@ -55,56 +78,60 @@ public class Player {
 	 * correct number of max workers
 	 */
 	private void initializeCities() {
-		cities[0] = new City(0);
-		cities[1] = new City(0);
-		cities[2] = new City(0);
-		cities[3] = new City(3);
-		cities[4] = new City(4);
-		cities[5] = new City(5);
-		cities[6] = new City(6);
+		cities = new Structure[7];
+		cities[0] = new Structure(0, 0);
+		cities[1] = new Structure(0, 0);
+		cities[2] = new Structure(0, 0);
+		cities[3] = new Structure(3, 0);
+		cities[4] = new Structure(4, 0);
+		cities[5] = new Structure(5, 0);
+		cities[6] = new Structure(6, 0);
 	}
-	
+
 	/** Returns the list of dice that the player can roll */
-	public List<Die> getPlayersDice(){
+	public List<Die> getPlayersDice() {
 		return dice;
 	}
-	
+
 	/** Does the first roll of the players turn */
-	public void doFirstRoll(){
+	public void doFirstRoll() {
 		roller.rollDice(dice);
 	}
-	
+
 	/**
 	 * Reroll the dice
 	 * 
-	 * @param diceToRoll the indices of the dice
+	 * @param diceToRoll
+	 *            the indices of the dice
 	 * @return true if reroll was possible.
 	 */
-	public boolean rerollDice(List<Integer> diceToRoll){
+	public boolean rerollDice(List<Integer> diceToRoll) {
 		return roller.reroll(diceToRoll, dice);
 	}
-	
+
 	/** Get the rerolls left */
-	public int getRerollsLeft(){
+	public int getRerollsLeft() {
 		return roller.getRerollsLeft();
 	}
-	
+
 	/** Adds a die to the players dice list */
 	public void addDie() throws AddedTooManyDiceException {
-		if (dice.size() >= 7) throw new AddedTooManyDiceException();
-		else dice.add(new Die());
+		if (dice.size() >= 7)
+			throw new AddedTooManyDiceException();
+		else
+			dice.add(new Die());
 	}
-	
+
 	/** Thrown when program tries to add more than 7 dice */
-	private class AddedTooManyDiceException extends RuntimeException{
-		
+	private class AddedTooManyDiceException extends RuntimeException {
+
 		private static final long serialVersionUID = 1L;
 	}
-	
+
 	/** Returns the number of full cities */
 	public int getNumCities() {
 		int count = 0;
-		for (City c : cities) {
+		for (Structure c : cities) {
 			if (c.isFull()) {
 				count++;
 			}
@@ -113,19 +140,32 @@ public class Player {
 	}
 
 	/** Return the city with this index */
-	public City getCity(int i) {
+	public Structure getCity(int i) {
 		return cities[i];
 	}
 
-	/** 
-	 * Adds workers to a particular city
-	 * NOTE: needs work....
+	/**
+	 * Adds workers to a particular city NOTE: needs work....
 	 * 
-	 * @param workers the amount of workers added
-	 * @param city the city number
+	 * @param workers
+	 *            the amount of workers added
+	 * @param city
+	 *            the city number
 	 */
 	public int buyCityWorkers(int workers, int city) {
 		return cities[city].addWorkers(workers);
+	}
+
+	public int buyMonumentWorkers(int workers, int monument) {
+		return monuments[monument].addWorkers(workers);
+	}
+
+	public String getMonumentsInfo() {
+		String str = "";
+		for (Structure s : monuments) {
+			str += s + "\n";
+		}
+		return str;
 	}
 
 	/** Add the specified number of goods to the player's resources. */
@@ -141,12 +181,13 @@ public class Player {
 			goodTypeCounter++;
 		}
 	}
-	
+
 	/**
-	 * @param amtFood Amount food to add.
+	 * @param amtFood
+	 *            Amount food to add.
 	 * @return The amount of food over the max or under the min.
 	 */
-	public int addFood(int amtFood){
+	public int addFood(int amtFood) {
 		return resources.changeAmount(PlayerResources.FOOD, amtFood);
 	}
 
@@ -160,14 +201,21 @@ public class Player {
 				+ resources.getAmount(PlayerResources.WOOD) + "\nFood: "
 				+ resources.getAmount(PlayerResources.FOOD);
 	}
-	
+
 	/** Returns the amount of food the player has */
-	public int getFood(){
+	public int getFood() {
 		return resources.getAmount(PlayerResources.FOOD);
 	}
 
 	public static void main(String[] args) {
-		Player p = new Player("");
+		Player p = new Player("",2);
+		System.out.println("There are 2 players, so you have 5 monuments to build:");
+		System.out.println(p.getMonumentsInfo());
+		System.out.println("Build the second monument:");
+		p.buyMonumentWorkers(5, 1);
+		System.out.println(p.getMonumentsInfo()+"\n");
+		
+		p = new Player("", 1);
 		System.out.println(p.getResourcesInfo());
 		System.out.println();
 		p.addGoods(3);
@@ -185,24 +233,29 @@ public class Player {
 		p.addGoods(10);
 		System.out.println("Added 10 goods.");
 		System.out.println(p.getResourcesInfo());
-		
-		p = new Player("");
-		System.out.println("\nInitial food: "+p.getFood());
+
+		p = new Player("", 1);
+		System.out.println("\nInitial food: " + p.getFood());
 		p.addFood(7);
-		System.out.println("Added 7 food: "+p.getFood());
+		System.out.println("Added 7 food: " + p.getFood());
 		p.addFood(10);
-		System.out.println("Added 10 food (max total is 15): "+p.getFood());
-		
-		p = new Player("");
-		System.out.println("\nThere should be three cities initially: "+p.getNumCities());
+		System.out.println("Added 10 food (max total is 15): " + p.getFood());
+
+		p = new Player("", 1);
+		System.out.println("\nThere should be three cities initially: "
+				+ p.getNumCities());
 		System.out.println("Is City #1 full? " + p.getCity(0).isFull());
 		System.out.println("Is City #4 full? " + p.getCity(3).isFull());
-		System.out.println("Num workers left after we add 4 workers to city #4 (max population = 3)? " + p.getCity(3).addWorkers(4));
+		System.out
+				.println("Num workers left after we add 4 workers to city #4 (max population = 3)? "
+						+ p.getCity(3).addWorkers(4));
 		System.out.println("Is City #4 full? " + p.getCity(3).isFull());
-		
-		Scanner scan = new Scanner (System.in);
+
+		Scanner scan = new Scanner(System.in);
 		System.out.print("\nChoose a player name: ");
-		p = new Player(scan.nextLine());
-		System.out.println("Hello player "+p.getName());
+		p = new Player(scan.nextLine(), 1);
+		System.out.println("Hello player " + p.getName());
+		
+		
 	}
 }
