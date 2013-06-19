@@ -211,10 +211,16 @@ public class Player {
 		return cities[city].addWorkers(workers);
 	}
 
+	/**
+	 * @param workers The number of workers to add to the specified monument.
+	 * @param monument The index associated with the monument.
+	 * @return The number of workers over the monument's upper limit.
+	 */
 	public int buyMonumentWorkers(int workers, int monument) {
 		return monuments[monument].addWorkers(workers);
 	}
 
+	/** Returns a string containing information about all monuments. */
 	public String getMonumentsInfo() {
 		String str = "";
 		for (Structure s : monuments) {
