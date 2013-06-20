@@ -279,6 +279,11 @@ public class Player {
 	public int getFood() {
 		return resources.getAmount(PlayerResources.FOOD);
 	}
+	
+	/** Get player's resources. */
+	public PlayerResources getPlayerResources(){
+		return resources;
+	}
 
 	public static void main(String[] args) {
 		Player p = new Player("", 2);

@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import model.DevelopmentList;
 import model.Game;
 
-public class DevelopmentsPanel extends JPanel {
+public class DevelopmentsPanel extends JPanel implements TurnObserver{
 
 	/** */
 	private static final long serialVersionUID = 1L;
@@ -131,16 +131,20 @@ public class DevelopmentsPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			for (int i = 0; i < developments.length; i++){
-				if (developments[i].isSelected() && developments[i].isEnabled()){
-					gamestate.getPlayersDevelopmentList(gamestate.getCurrentPlayer()).buyDevelopment(i);
-				}
-			}
+			buyDevelopment();
 			gamestate.nextTurn();
 			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()).getName() + "'s turn");
 			updateDevelopmentChecks();
 		}
 		
+	}
+	
+	public void buyDevelopment(){
+		for (int i = 0; i < developments.length; i++){
+			if (developments[i].isSelected() && developments[i].isEnabled()){
+				gamestate.getPlayersDevelopmentList(gamestate.getCurrentPlayer()).buyDevelopment(i);
+			}
+		}
 	}
 
 	public static void main(String[] args) {
@@ -181,6 +185,11 @@ public class DevelopmentsPanel extends JPanel {
 			}
 		}
 
+	}
+
+	@Override
+	public void doNewTurnThings() {
+		updateDevelopmentChecks();
 	}
 	
 }

@@ -26,15 +26,22 @@ public class PartOfTurnPanel extends JPanel {
 	/** Holds the part of turn that the player is on */
 	private JLabel part;
 	
+	private JButton continueBtn;
+	
 	public PartOfTurnPanel(Game game){
 		gamestate = game;
+		
+	}
+	
+	private void setUpTurnPanel(){
+		JPanel southPanel = new JPanel();
 		JPanel innerpanel = new JPanel();
 		innerpanel.setLayout(new GridLayout(2,2));
 		
 		JLabel label = new JLabel("Player's turn:");
 		innerpanel.add(label);
 		
-		name = new JLabel(gamestate.getPlayer(gamestate.getCurrentPlayer()+1).getName());
+		name = new JLabel(gamestate.getPlayer(gamestate.getCurrentPlayer()).getName());
 		innerpanel.add(name);
 		
 		label = new JLabel("Turn Part:");
@@ -43,16 +50,17 @@ public class PartOfTurnPanel extends JPanel {
 		part = new JLabel(Game.TURN_PARTS[gamestate.getCurrentTurnPart()]);
 		innerpanel.add(part);
 		
-		this.setLayout(new BorderLayout());
-		add(innerpanel, BorderLayout.CENTER);
-		JButton continueBtn = new JButton("Continue");
+		southPanel.setLayout(new BorderLayout());
+		southPanel.add(innerpanel, BorderLayout.CENTER);
+		continueBtn = new JButton("Continue");
 		continueBtn.addActionListener(new ContinueListener());
-		add(continueBtn, BorderLayout.SOUTH);
+		southPanel.add(continueBtn, BorderLayout.SOUTH);
 	}
 	
 	public void updatePanel(){
-		name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()+1).getName());
+		name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()).getName());
 		part.setText(Game.TURN_PARTS[gamestate.getCurrentTurnPart()]);
+		continueBtn.setText(Game.TURN_PARTS[gamestate.getCurrentTurnPart()]);
 	}
 	
 	public static void main(String[] args){

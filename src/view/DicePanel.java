@@ -17,7 +17,7 @@ import model.Game;
 import model.RollTracker;
 
 /** The panel that displays all the dice. */
-public class DicePanel extends JPanel{
+public class DicePanel extends JPanel implements TurnObserver{
 	
 	/** */
 	private static final long serialVersionUID = 1L;
@@ -110,10 +110,7 @@ public class DicePanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			gamestate.nextTurn();
-			gamestate.rollPlayersDice(gamestate.getCurrentPlayer());
-			rollCount .setText("Rerolls left: "+gamestate.getPlayersNumRerolls(gamestate.getCurrentPlayer()));
-			updateGraphicDice();
-			repaint();
+			doNewTurnThings();
 		}
 		
 	}
@@ -128,6 +125,20 @@ public class DicePanel extends JPanel{
 			updateGraphicDice();
 			repaint();
 		}
+		
+	}
+
+	@Override
+	public void doNewTurnThings() {
+		gamestate.rollPlayersDice(gamestate.getCurrentPlayer());
+		//rollCount .setText("Rerolls left: "+gamestate.getPlayersNumRerolls(gamestate.getCurrentPlayer()));
+		updateGraphicDice();
+		repaint();
+		
+	}
+
+	public void updateGame() {
+		// TODO Auto-generated method stub
 		
 	}
 }

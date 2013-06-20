@@ -20,13 +20,23 @@ public class Game {
 
 	/** holds current position */
 	private int current_turn_part;
+	
+	/** Turn constants. */
+	public static final int ROLL_DICE = 0, FEED_DISASTERS = 1, BUILD = 2, DEVELOPMENT = 3, DISCARD = 4;
 
 	/** The names of the different turn parts. */
 	public static final String[] TURN_PARTS = {
 			"Roll dice and collect goods and food",
 			"Feed cities resolve disasters",
-			"Build cities and / or monumentes", "Option to buy 1 development",
+			"Build cities and / or monuments", "Option to buy 1 development",
 			"Discard goods in excess of 6" };
+	
+	/** The names of the different turn parts. */
+	public static final String[] TURN_END_TEXT = {
+			"Done rolling",
+			"Done feeding cities",
+			"Done building stuff", "Done buying development",
+			"Done discarding goods" };
 
 	/**
 	 * 

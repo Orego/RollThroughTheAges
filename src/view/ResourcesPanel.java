@@ -13,9 +13,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import model.Game;
 import model.PlayerResources;
 /** This class displays resources graphically. */
-public class ResourcesPanel extends JPanel {
+public class ResourcesPanel extends JPanel implements TurnObserver {
 
 	/** The images associated with the different resources. */
 	private static final ImageIcon[] RESOURCE_IMAGES = {
@@ -26,6 +27,9 @@ public class ResourcesPanel extends JPanel {
 			new ImageIcon("Images/spearhead.jpg"),
 			new ImageIcon("Images/food2.jpg") };
 
+	/** the game */
+	private Game game;
+	
 	/** These arrays display the amount and worth of goods in each category. */
 	private JLabel[] amountLabel, worthLabel;
 
@@ -35,7 +39,9 @@ public class ResourcesPanel extends JPanel {
 	/** The worth of total goods. */
 	private JLabel totalWorth;
 
-	public ResourcesPanel() {
+	public ResourcesPanel(Game game) {
+		this.game = game;
+		
 		amountLabel = new JLabel[6];
 		worthLabel = new JLabel[6];
 		layoutGUI();
@@ -69,28 +75,14 @@ public class ResourcesPanel extends JPanel {
 		this.add(worthLabel[PlayerResources.FOOD]);
 	}
 
-	/** Updates the amount and worth of resources. */
-	public void updateResources(int[] amount, int[] worth, boolean granaries) {
-		int totalAmount = 0, totalWorth = 0;
-		for (int i = 0; i < 6; i++) {
-			if (i != PlayerResources.FOOD) {
-				totalWorth += worth[i];
-				totalAmount += amount[i];
-			}
-			amountLabel[i].setText("" + amount[i]);
-			if (i != PlayerResources.FOOD || granaries)
-				worthLabel[i].setText("" + worth[i]);
-		}
-		this.totalAmount.setText("" + totalAmount);
-		this.totalWorth.setText("" + totalWorth);
-	}
+	
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setPreferredSize(new Dimension(60 * 3, 40 * 8));
-		ResourcesPanel rp = new ResourcesPanel();
+		ResourcesPanel rp = new ResourcesPanel(new Game(new String[] {"1"}));
 		panel.add(rp, BorderLayout.CENTER);
 		JButton changeAndUpdate = new JButton("+1 resource to each");
 		changeAndUpdate.addActionListener(rp.new ButtonListener());
@@ -116,6 +108,49 @@ public class ResourcesPanel extends JPanel {
 					new int[] { temp,temp*2,temp*3,temp*4,temp*5,clickCounter*4}, false);
 		}
 
+	}
+
+	@Override
+	public void doNewTurnThings() {
+		updateResources();
+	}
+
+
+	/** Updates the displayed amount and worth of resources. */
+	public void updateResources() {
+		//TODO: get this from player
+		boolean granaries = false;
+		
+		PlayerResources r = game.getPlayer(game.getCurrentPlayer()).getPlayerResources();
+		int totalAmount = 0, totalWorth = 0;
+		for (int i = 0; i < 6; i++) {
+			if (i != PlayerResources.FOOD) {
+				totalWorth += r.getWorth(i);
+				totalAmount += r.getAmount(i);
+			}
+			amountLabel[i].setText("" + r.getAmount(i));
+			if (i != PlayerResources.FOOD || granaries)
+				worthLabel[i].setText("" + r.getWorth(i));
+		}
+		this.totalAmount.setText("" + totalAmount);
+		this.totalWorth.setText("" + totalWorth);
+		
+	}
+	
+	/** Updates the displayed amount and worth of resources. */
+	public void updateResources(int[] amount, int[] worth, boolean granaries) {
+		int totalAmount = 0, totalWorth = 0;
+		for (int i = 0; i < 6; i++) {
+			if (i != PlayerResources.FOOD) {
+				totalWorth += worth[i];
+				totalAmount += amount[i];
+			}
+			amountLabel[i].setText("" + amount[i]);
+			if (i != PlayerResources.FOOD || granaries)
+				worthLabel[i].setText("" + worth[i]);
+		}
+		this.totalAmount.setText("" + totalAmount);
+		this.totalWorth.setText("" + totalWorth);
 	}
 
 }

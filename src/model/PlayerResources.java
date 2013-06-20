@@ -70,7 +70,7 @@ public class PlayerResources {
 	}
 	
 	/** Returns the worth of the type of good.  If food, assumes granaries development applies. */
-	public int worthOf(int typeGood){
+	public int getWorth(int typeGood){
 		if (typeGood == FOOD)
 			return resourceArray[typeGood]*4;
 		return (typeGood+1)*(resourceArray[typeGood]*resourceArray[typeGood]+resourceArray[typeGood])/2;

@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import model.Game;
 
-public class CitiesPanel extends JPanel {
+public class CitiesPanel extends JPanel implements TurnObserver{
 
 	/** The images associated with the different cities. */
 	private static final ImageIcon[] CITY_IMAGES = {
@@ -321,9 +321,7 @@ public class CitiesPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			for(int i=3; i<7; i++){
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyCityWorkers(getSelectedWorkersForCity(i), i);		
-			}
+			buyWorkers();
 			gamestate.nextTurn();
 			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()).getName() +"'s turn");
 			updateCityChecks();
@@ -331,5 +329,16 @@ public class CitiesPanel extends JPanel {
 			
 		}
 		
+	}
+	
+	public void buyWorkers(){
+		for(int i=3; i<7; i++){
+			gamestate.getPlayer(gamestate.getCurrentPlayer()).buyCityWorkers(getSelectedWorkersForCity(i), i);		
+		}
+	}
+
+	@Override
+	public void doNewTurnThings() {
+		updateCityChecks();
 	}
 }
