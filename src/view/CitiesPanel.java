@@ -26,12 +26,6 @@ public class CitiesPanel extends JPanel {
 			new ImageIcon("Images/city6.jpg"),
 			new ImageIcon("Images/city7.jpg") };
 
-	/** The images associated with the different full cities. */
-	private static final ImageIcon[] CITY_IMAGES_SELECTED = {
-			new ImageIcon("Images/city4selected.jpg"),
-			new ImageIcon("Images/city5selected.jpg"),
-			new ImageIcon("Images/city6selected.jpg"),
-			new ImageIcon("Images/city7selected.jpg") };
 	
 	/** The city images */
 	private JLabel[] cities;
