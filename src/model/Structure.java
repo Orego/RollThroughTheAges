@@ -18,6 +18,10 @@ public class Structure {
 		otherPlayerHasFinished = finished;
 	}
 	
+	public boolean getOtherPlayerHasFinished(){
+		return otherPlayerHasFinished;
+	}
+	
 	/** Returns points for completion--zero if not finished yet (or for 1st monument, 2nd person). */
 	public int getScore(){
 		if (curPop<maxPop)

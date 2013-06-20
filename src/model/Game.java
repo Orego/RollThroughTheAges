@@ -1,5 +1,7 @@
 package model;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -92,6 +94,20 @@ public class Game {
 	 * TODO: make this private once GUI is integrated
 	 * */
 	public boolean nextTurn() {
+		// before starting next turn, do the following
+		// update monuments to indicate if it was the first one built
+		for (int m = 0; m < getPlayer(0).getMonumentsPlayerHas().length; m++) {
+			if ( (!(getPlayer(currentplayer).getMonument(m).getOtherPlayerHasFinished()))
+					&& (getPlayer(currentplayer).getMonumentsPlayerHas()[m]) ) {
+				for (int i = 0; i < getNumPlayers(); i++) {
+					if (i != currentplayer) {
+						getPlayer(i).getMonument(m).setOtherPlayerHasFinished(true);
+					}
+				}
+			}
+		}
+
+		// start next turn & check if game is over
 		currentplayer = (currentplayer + 1) % (players.size());
 		if ((currentplayer == 0) && isEndofGame()) {
 			return false;
@@ -99,7 +115,10 @@ public class Game {
 		return true;
 	}
 
-	/** This method advances to the next turn part. It returns false if the game is over. */
+	/**
+	 * This method advances to the next turn part. It returns false if the game
+	 * is over.
+	 */
 	public boolean nextTurnPart() {
 		if (current_turn_part == 4)
 			if (!nextTurn())
@@ -195,6 +214,39 @@ public class Game {
 		for (int i = 0; i < g.getNumPlayers(); i++) {
 			System.out.println("Player " + g.getPlayer(i).getName()
 					+ " has score " + g.getPlayer(i).getTotalScore());
+		}
+		
+		Game g2 = new Game(playerNames);
+		System.out.println("let's start new game has the following number of player(s): "
+				+ g2.getNumPlayers());
+		System.out.println("Their names are " + g2.getPlayerNames());
+
+		System.out.println("\nGame 2");
+		System.out.println("Player " + g2.getPlayer(0).getName()
+				+ " buys monument 2");
+		g2.getPlayer(0).buyMonumentWorkers(15, 1);
+		g2.nextTurn();
+		if(g.getNumPlayers() > 1){
+			System.out.println("Player " + g2.getPlayer(1).getName()
+					+ " buys all monuments incl first one");
+			for (int i = 0; i < g2.getPlayer(1).getMonumentsPlayerHas().length; i++) {
+				g2.getPlayer(1).buyMonumentWorkers(15, i);
+			}
+		}
+		g2.nextTurn();
+		for (int i=0; i<g2.getNumPlayers();i++){
+			System.out.println(g2.getPlayer(i).getMonumentsInfo());
+		}
+		
+		for (int i = 2; i < g2.getNumPlayers(); i++) {
+			System.out.println("Player "
+					+ g2.getPlayer((i + 1) % g2.getNumPlayers()).getName()
+					+ " can go now: " + g2.nextTurn());
+		}
+		System.out.println("The scores for game 2 are");
+		for (int i = 0; i < g2.getNumPlayers(); i++) {
+			System.out.println("Player " + g2.getPlayer(i).getName()
+					+ " has score " + g2.getPlayer(i).getTotalScore());
 		}
 	}
 }

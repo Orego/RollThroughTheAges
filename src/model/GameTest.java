@@ -57,17 +57,18 @@ public class GameTest {
 		}
 
 		g = new Game(new String[] { "p1", "p2", "p3", "p4" });
-		p1 = g.getPlayer(0);
-		g.getPlayer(1).buyMonumentWorkers(3, 0);
-		for (int i = 1; i < g.getPlayer(0).getMonumentsPlayerHas().length; i++) {
+		p1 = g.getPlayer(1);
+		g.getPlayer(0).buyMonumentWorkers(5, 0);
+		g.nextTurn();
+		for (int i = 0; i < p1.getMonumentsPlayerHas().length; i++) {
 			p1.buyMonumentWorkers(15, i);
 		}
-		for (int i = 1; i < g.getNumPlayers(); i++) {
+		for (int i = 2; i < g.getNumPlayers(); i++) {
 			assertTrue(g.nextTurn());
 		}
 		assertFalse(g.nextTurn());
 		assertEquals(42, p1.getTotalScore());
-		assertEquals(1, g.getPlayer(1).getTotalScore());
+		assertEquals(1, g.getPlayer(0).getTotalScore());
 		assertEquals(0, g.getPlayer(2).getTotalScore());
 		assertEquals(0, g.getPlayer(3).getTotalScore());
 
