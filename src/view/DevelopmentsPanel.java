@@ -137,7 +137,7 @@ public class DevelopmentsPanel extends JPanel {
 				}
 			}
 			gamestate.nextTurn();
-			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()+1).getName() + "'s turn");
+			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()).getName() + "'s turn");
 			updateDevelopmentChecks();
 		}
 		
@@ -156,7 +156,7 @@ public class DevelopmentsPanel extends JPanel {
 		JPanel buttonPane = new JPanel();
 		JButton buyBtn = new JButton("Buy");
 		buyBtn.addActionListener(devpane.new BuyListener());
-		name = new JLabel(game.getPlayer(game.getCurrentPlayer()+1).getName() + "'s turn");
+		name = new JLabel(game.getPlayer(game.getCurrentPlayer()).getName() + "'s turn");
 		buttonPane.add(buyBtn);
 		buttonPane.add(name);
 		buttonPane.setBackground(Color.white);

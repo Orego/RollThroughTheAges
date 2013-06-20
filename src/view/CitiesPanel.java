@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -13,6 +14,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import model.Game;
 
 public class CitiesPanel extends JPanel {
 
@@ -32,25 +35,21 @@ public class CitiesPanel extends JPanel {
 
 	private JLabel[] cities;
 	private JCheckBox[] checkboxes;
+	private static JLabel name;
+	private Game gamestate;
 
 	/**
 	 * This initializes all of the graphic cities with their checkboxes to
 	 * determine the number of workers
 	 */
-	public CitiesPanel() {
+	public CitiesPanel(Game game) {
+		gamestate = game;
 		cities = new JLabel[4];
 		checkboxes = new JCheckBox[18];
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		this.setBackground(Color.white);
 		c.fill = GridBagConstraints.HORIZONTAL;
-		
-		JButton b = new JButton("check");
-		b.addActionListener(new CheckListener());
-		c.gridx = 2;
-		c.gridy = 2;
-		this.add(b,c);
-		
 
 		ImageIcon icon = new ImageIcon("Images/city1.jpg");
 		JLabel label = new JLabel(icon);
@@ -90,7 +89,7 @@ public class CitiesPanel extends JPanel {
 			panels[i].setPreferredSize(new Dimension(CITY_IMAGES[i]
 					.getIconWidth(), CITY_IMAGES[i].getIconHeight()));
 			panels[i].repaint();
-		}	
+		}
 
 		// Adding Checkboxes to the Fourth city
 		checkboxes[0] = new JCheckBox();
@@ -187,74 +186,148 @@ public class CitiesPanel extends JPanel {
 		checkboxes[17].setBounds(30, 90, 25, 25);
 		panels[3].repaint();
 	}
-	
-	/** 
+
+	/**
 	 * It gets the selected workers from a city
-	 * @param city (index of the city)
+	 * 
+	 * @param city
+	 *            (index of the city)
 	 * @return
 	 */
 	public int getSelectedWorkersForCity(int city) {
-		switch(city){
+		switch (city) {
 		case 3:
 			int sum = 0;
-			for(int i=0; i<=2; i++) {
+			for (int i = 0; i <= 2; i++) {
 				if (checkboxes[i].isSelected() && checkboxes[i].isEnabled()) {
-					sum ++;
-				}	
+					sum++;
+				}
 			}
 			return sum;
 		case 4:
 			sum = 0;
-			for(int i=3; i<=6; i++) {
+			for (int i = 3; i <= 6; i++) {
 				if (checkboxes[i].isSelected() && checkboxes[i].isEnabled()) {
-					sum ++;
-				}	
+					sum++;
+				}
 			}
 			return sum;
-			
-		case 5: 
+
+		case 5:
 			sum = 0;
-			for(int i=7; i<=11; i++) {
+			for (int i = 7; i <= 11; i++) {
 				if (checkboxes[i].isSelected() && checkboxes[i].isEnabled()) {
-					sum ++;
-				}	
+					sum++;
+				}
 			}
 			return sum;
-		case 6: 
+		case 6:
 			sum = 0;
-			for(int i=12; i<=17; i++) {
+			for (int i = 12; i <= 17; i++) {
 				if (checkboxes[i].isSelected() && checkboxes[i].isEnabled()) {
-					sum ++;
-				}	
+					sum++;
+				}
 			}
 			return sum;
-		default: 
+		default:
 			return 0;
-		} 
+		}
 	}
 
+	/**
+	 * Updates the check boxes for the current player
+	 */
+	private void updateCityChecks() {
+		for (int i = 0; i < 18; i++){
+			checkboxes[i].setSelected(false);
+			checkboxes[i].setEnabled(true);
+		}
+		for (int i = 3; i < 7; i++) {
+			int population = gamestate.getPlayer(gamestate.getCurrentPlayer())
+					.getCity(i).currentPopulation();
+
+			for (int j = 0; j < population; j++) {
+				switch (i) {
+				case 3:
+					checkboxes[j].setSelected(true);
+					checkboxes[j].setEnabled(false);
+					break;
+				case 4:
+					checkboxes[j + 3].setSelected(true);
+					checkboxes[j + 3].setEnabled(false);
+					break;
+				case 5:
+					checkboxes[j + 7].setSelected(true);
+					checkboxes[j + 7].setEnabled(false);
+					break;
+				case 6:
+					checkboxes[j + 12].setSelected(true);
+					checkboxes[j + 12].setEnabled(false);
+					break;
+				}
+			}
+			
+		}
+	}
+	
+	
+
 	public static void main(String[] args) {
+		String[] names = { "Matt", "Candice" };
+		Game g = new Game(names);
+
 		JFrame frame = new JFrame();
-		CitiesPanel cPanel = new CitiesPanel();
-		frame.add(cPanel);
+		CitiesPanel cPanel = new CitiesPanel(g);
+		JPanel outerPanel = new JPanel();
+		outerPanel.setLayout(new BorderLayout());
+		outerPanel.add(cPanel, BorderLayout.CENTER);
+		frame.add(outerPanel);
+		JPanel buttonPanel = new JPanel();
+		JButton buyButton = new JButton("Buy cities");
+		buttonPanel.add(buyButton);
+		buyButton.addActionListener(cPanel.new BuyListener());
+		name = new JLabel(g.getPlayer(g.getCurrentPlayer()).getName()
+				+ "'s turn");
+		buttonPanel.setBackground(Color.white);
+		buttonPanel.add(name);
+		frame.add(buttonPanel, BorderLayout.SOUTH);
+
 		cPanel.setUpPanel();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
+
 	}
 
 	public void setUpPanel() {
 		this.setBounds(0, 0, 200, 100);
 	}
-	
-	public class CheckListener implements ActionListener{
+
+	public class CheckListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			System.out.println("First City " +getSelectedWorkersForCity(3));
-			System.out.println("Second City " +getSelectedWorkersForCity(4));
-			System.out.println("Third City " +getSelectedWorkersForCity(5));
-			System.out.println("Fourth City " +getSelectedWorkersForCity(6) + "\n");
+			System.out.println("First City " + getSelectedWorkersForCity(3));
+			System.out.println("Second City " + getSelectedWorkersForCity(4));
+			System.out.println("Third City " + getSelectedWorkersForCity(5));
+			System.out.println("Fourth City " + getSelectedWorkersForCity(6)
+					+ "\n");
+
+		}
+
+	}
+	
+	public class BuyListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			for(int i=3; i<7; i++){
+				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyCityWorkers(getSelectedWorkersForCity(i), i);		
+			}
+			gamestate.nextTurn();
+			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()).getName() +"'s turn");
+			updateCityChecks();
+			
 			
 		}
 		
