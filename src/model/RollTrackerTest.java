@@ -1,8 +1,8 @@
 package model;
+
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class RollTrackerTest {
 		assertEquals(workers, track.getWorkers());
 		assertEquals(skulls, track.getSkulls());
 		assertEquals(goods, track.getGoods());
-		
+
 		ArrayList<Integer> ints = new ArrayList<Integer>();
 		int ranNum = (int) (Math.random() * 6);
 		ints.add(ranNum);
@@ -67,7 +67,7 @@ public class RollTrackerTest {
 			ints.add(ranNum);
 		}
 		assertTrue(track.reroll(ints, dice));
-		
+
 		// will give infinite loop if all dice are skulls
 		while (track.rerollContainsSkulls(ints, dice)) {
 			ints.clear();
@@ -75,13 +75,33 @@ public class RollTrackerTest {
 			ints.add(ranNum);
 		}
 		assertTrue(track.reroll(ints, dice));
-		
+
 		assertFalse(track.reroll(ints, dice));
-		
-		// the following test will frequently fail due to randomness; feel free
-		// to comment it out
-		assertFalse(food == track.getFood() && coin == track.getCoin()
-				&& workers == track.getWorkers() && skulls == track.getSkulls()
-				&& goods == track.getGoods());
+
+		//this test makes sure reroll changes the dice
+		boolean flag = false;
+		for (int i=0; i<10; i++) {
+			track.rollDice(dice);
+			
+			food = track.getFood();
+			coin = track.getCoin();
+			workers = track.getWorkers();
+			skulls = track.getSkulls();
+			goods = track.getGoods();
+			
+			do {
+				ints.clear();
+				ranNum = (int) (Math.random() * 6);
+				ints.add(ranNum);
+			} while (track.rerollContainsSkulls(ints, dice));
+			
+			assertTrue(track.reroll(ints, dice));
+			
+			if (!(food == track.getFood() && coin == track.getCoin()
+					&& workers == track.getWorkers() && skulls == track.getSkulls()
+					&& goods == track.getGoods()))
+				flag = true;
+		}
+		assertTrue(flag);
 	}
 }

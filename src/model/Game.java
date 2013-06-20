@@ -1,5 +1,7 @@
 package model;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,6 +21,7 @@ public class Game {
 	/** holds current position */
 	private int current_turn_part;
 
+	/** The names of the different turn parts. */
 	public static final String[] TURN_PARTS = {
 			"Roll dice and collect goods and food",
 			"Feed cities resolve disasters",
@@ -39,9 +42,34 @@ public class Game {
 
 	}
 
-	/** Returns information about players 1,2,3, or 4. */
+	/** This calculates whether the game is over. */
+	private boolean isEndofGame() {
+		int[] monumentCheck = new int[getPlayer(0).getMonumentsPlayerHas().length];
+		boolean[] listOfMonuments;
+		for (int i = 0; i < players.size(); i++) {
+			if (getPlayer(i).getDevelopementList().getAvailableDevelopments()
+					.size() <= 8) {
+				return true;
+			}
+			listOfMonuments = getPlayer(i).getMonumentsPlayerHas();
+			for (int j = 0; j < listOfMonuments.length; j++) {
+				if (listOfMonuments[j])
+					monumentCheck[j] = 1;
+			}
+		}
+		int sum = 0;
+		for (int i = 0; i < monumentCheck.length; i++) {
+			sum += monumentCheck[i];
+		}
+		if (sum == monumentCheck.length) {
+			return true;
+		}
+		return false;
+	}
+
+	/** Returns information about players--zero-based. */
 	public Player getPlayer(int i) {
-		return players.get(i - 1);
+		return players.get(i);
 	}
 
 	/** Get the total number of players in the game */
@@ -53,23 +81,53 @@ public class Game {
 	public int getCurrentPlayer() {
 		return currentplayer;
 	}
-	
+
 	/** Return's the part of the turn the player is on */
-	public int getCurrentTurnPart(){
+	public int getCurrentTurnPart() {
 		return current_turn_part;
 	}
 
-	/** Ends the current turn & starts next one */
-	public void nextTurn() {
+	/**
+	 * Ends the current turn & starts next one Returns false if the game is
+	 * ended.
+	 * 
+	 * TODO: make this private once GUI is integrated
+	 * */
+	public boolean nextTurn() {
+		// before starting next turn, do the following
+		// update monuments to indicate if it was the first one built
+		for (int m = 0; m < getPlayer(0).getMonumentsPlayerHas().length; m++) {
+			if ( (!(getPlayer(currentplayer).getMonument(m).getOtherPlayerHasFinished()))
+					&& (getPlayer(currentplayer).getMonumentsPlayerHas()[m]) ) {
+				for (int i = 0; i < getNumPlayers(); i++) {
+					if (i != currentplayer) {
+						getPlayer(i).getMonument(m).setOtherPlayerHasFinished(true);
+					}
+				}
+			}
+		}
+
+		// start next turn & check if game is over
 		currentplayer = (currentplayer + 1) % (players.size());
-	}
-	
-	public void nextTurnPart() {
-		if(current_turn_part == 4)
-			nextTurn();
-		current_turn_part = (current_turn_part + 1) % 5;		
+		if ((currentplayer == 0) && isEndofGame()) {
+			return false;
+		}
+		return true;
 	}
 
+	/**
+	 * This method advances to the next turn part. It returns false if the game
+	 * is over.
+	 */
+	public boolean nextTurnPart() {
+		if (current_turn_part == 4)
+			if (!nextTurn())
+				return false;
+		current_turn_part = (current_turn_part + 1) % 5;
+		return true;
+	}
+
+	/** This method returns the specified player's development list. */
 	public DevelopmentList getPlayersDevelopmentList(int player) {
 		return players.get(player).getDevelopementList();
 	}
@@ -139,5 +197,56 @@ public class Game {
 		System.out.println("this game has the following number of player(s): "
 				+ g.getNumPlayers());
 		System.out.println("Their names are " + g.getPlayerNames());
+
+		System.out.println("\nPlayer " + g.getPlayer(0).getName()
+				+ " buys five developments (the cheater).");
+		DevelopmentList pd = g.getPlayersDevelopmentList(0);
+		for (int i = 0; i < 5; i++) {
+			pd.buyDevelopment(i);
+		}
+
+		for (int i = 0; i < g.getNumPlayers(); i++) {
+			System.out.println("Player "
+					+ g.getPlayer((i + 1) % g.getNumPlayers()).getName()
+					+ " can go now: " + g.nextTurn());
+		}
+		System.out.println("Game over.");
+		for (int i = 0; i < g.getNumPlayers(); i++) {
+			System.out.println("Player " + g.getPlayer(i).getName()
+					+ " has score " + g.getPlayer(i).getTotalScore());
+		}
+		
+		Game g2 = new Game(playerNames);
+		System.out.println("let's start new game has the following number of player(s): "
+				+ g2.getNumPlayers());
+		System.out.println("Their names are " + g2.getPlayerNames());
+
+		System.out.println("\nGame 2");
+		System.out.println("Player " + g2.getPlayer(0).getName()
+				+ " buys monument 2");
+		g2.getPlayer(0).buyMonumentWorkers(15, 1);
+		g2.nextTurn();
+		if(g.getNumPlayers() > 1){
+			System.out.println("Player " + g2.getPlayer(1).getName()
+					+ " buys all monuments incl first one");
+			for (int i = 0; i < g2.getPlayer(1).getMonumentsPlayerHas().length; i++) {
+				g2.getPlayer(1).buyMonumentWorkers(15, i);
+			}
+		}
+		g2.nextTurn();
+		for (int i=0; i<g2.getNumPlayers();i++){
+			System.out.println(g2.getPlayer(i).getMonumentsInfo());
+		}
+		
+		for (int i = 2; i < g2.getNumPlayers(); i++) {
+			System.out.println("Player "
+					+ g2.getPlayer((i + 1) % g2.getNumPlayers()).getName()
+					+ " can go now: " + g2.nextTurn());
+		}
+		System.out.println("The scores for game 2 are");
+		for (int i = 0; i < g2.getNumPlayers(); i++) {
+			System.out.println("Player " + g2.getPlayer(i).getName()
+					+ " has score " + g2.getPlayer(i).getTotalScore());
+		}
 	}
 }

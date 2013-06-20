@@ -228,6 +228,18 @@ public class Player {
 		}
 		return str;
 	}
+	
+	public boolean[] getMonumentsPlayerHas(){
+		boolean[] b = new boolean[monuments.length]; 
+		for (int i=0; i<monuments.length; i++)
+			b[i] = monuments[i].isFull();
+		return b;
+	}
+	
+	/** Returns monuments, even if not completed, but only if part of the game */
+	public Structure getMonument(int i) {
+		return monuments[i];
+	}
 
 	/** Add the specified number of goods to the player's resources. */
 	public void addGoods(int numGoods) {
