@@ -54,11 +54,11 @@ public class MainWindow extends JFrame {
 		g = new Game(new String[] { "1", "2", "3", "4" });
 		
 		//TODO: take this out later
-		for (int i=0; i<g.getNumPlayers(); i++){
-			for (int j=3; j<7; j++){
-				g.getPlayer(i).buyCityWorkers(15, j);
-			}
-		}
+//		for (int i=0; i<g.getNumPlayers(); i++){
+//			for (int j=3; j<7; j++){
+//				g.getPlayer(i).buyCityWorkers(15, j);
+//			}
+//		}
 
 		turnObservers = new ArrayList<TurnObserver>();
 
@@ -110,7 +110,7 @@ public class MainWindow extends JFrame {
 			workersLeft.setText("Workers left: "+g.getPlayer(g.getCurrentPlayer()).getWorkersAvailable());
 		} else if (turnPartEnding == Game.FEED_DISASTERS) {
 			// dice recorded, so update resources
-			g.processDisasters();
+			g.feedCitiesProcessDisasters();
 			cities.turnPartIsThis(true);
 			updateResources();
 			updateTotalScore();
@@ -140,7 +140,7 @@ public class MainWindow extends JFrame {
 	private void doNewTurnThings() {
 		this.setTitle("Roll Through the Ages - Player: "
 				+ g.getPlayer(g.getCurrentPlayer()).getName());
-		totalScore.setText("Total score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
+		totalScore.setText("Player score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
 		for (TurnObserver to : turnObservers) {
 			to.doNewTurnThings();
 		}

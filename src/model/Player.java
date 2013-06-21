@@ -417,4 +417,11 @@ public class Player {
 	public int getTurnMoney() {
 		return turnMoney;
 	}
+
+	public void feedCities() {
+		int offBy = resources.changeAmount(PlayerResources.FOOD, -getNumCities());
+		if (offBy<0){
+			disasterCount -= offBy;
+		}
+	}
 }

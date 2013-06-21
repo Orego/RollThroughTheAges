@@ -266,7 +266,8 @@ public class Game {
 		players.get(currentplayer).doneRolling();
 	}
 
-	public void processDisasters() {
+	public void feedCitiesProcessDisasters() {
+		players.get(currentplayer).feedCities();
 		players.get(currentplayer).processDisasters();
 		
 		int numSkulls = players.get(currentplayer).getSkulls();
