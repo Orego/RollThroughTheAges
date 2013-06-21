@@ -53,8 +53,9 @@ public class Player {
 		for (int i = 0; i < 3; i++) {
 			dice.add(new Die());
 		}
-		roller = new RollTracker();
+
 		developments = new DevelopmentList();
+		roller = new RollTracker(developments);
 	}
 
 	/** Returns the player's total score. */
@@ -435,4 +436,12 @@ public class Player {
 	public int getTurnMoney() {
 		return turnMoney;
 	}
+
+	public void feedCities() {
+		int offBy = resources.changeAmount(PlayerResources.FOOD, -getNumCities());
+		if (offBy<0){
+			disasterCount -= offBy;
+		}
+	}
+	
 }

@@ -147,6 +147,16 @@ public class Game {
 	public List<Die> getPlayersDice(int player) {
 		return players.get(player).getPlayersDice();
 	}
+	
+	public String getWinner(){
+		int max = 0;
+		for (int i=1; i<players.size(); i++){
+			if (players.get(i).getTotalScore()>players.get(max).getTotalScore()){
+				max = i;
+			}
+		}
+		return players.get(max).getName();
+	}
 
 	/**
 	 * Do the first roll for a player
@@ -266,7 +276,8 @@ public class Game {
 		players.get(currentplayer).doneRolling();
 	}
 
-	public void processDisasters() {
+	public void feedCitiesProcessDisasters() {
+		players.get(currentplayer).feedCities();
 		players.get(currentplayer).processDisasters();
 		
 		int numSkulls = players.get(currentplayer).getSkulls();

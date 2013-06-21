@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import model.Game;
 
-public class MonumentPanel extends JPanel {
+public class MonumentPanel extends JPanel implements TurnObserver {
 
 	/** The images associated with the different cities. */
 	private static final ImageIcon[] MONUMENT_IMAGES = {
@@ -36,9 +36,12 @@ public class MonumentPanel extends JPanel {
 	private JCheckBox[] checkboxes;
 
 	private static JLabel name;
+	
+	private MainWindow main;
 
-	public MonumentPanel(Game game) {
+	public MonumentPanel(Game game, MainWindow main) {
 		gamestate = game;
+		this.main = main;
 		checkboxes = new JCheckBox[63];
 		this.setLayout(new GridBagLayout());
 		this.setBackground(Color.white);
@@ -46,8 +49,7 @@ public class MonumentPanel extends JPanel {
 		// c.fill = GridBagConstraints.HORIZONTAL;
 
 		JPanel[] panels = new JPanel[7];
-		
-		
+
 		panels[0] = new JPanel();
 		c.gridx = 0;
 		c.gridy = 0;
@@ -429,8 +431,12 @@ public class MonumentPanel extends JPanel {
 		panels[6].add(checkboxes[62], 0);
 		checkboxes[62].setBounds(74, 80, 25, 25);
 		panels[6].repaint();
-		
+
 		updateCheckboxes();
+		
+		for (int i=0; i<checkboxes.length; i++){
+			checkboxes[i].addActionListener(new CheckListener());
+		}
 	}
 
 	public int getSelectedWorkersForMonument(int monument) {
@@ -483,42 +489,49 @@ public class MonumentPanel extends JPanel {
 		return sum;
 	}
 
-	public void updateCheckboxes() {
-		for (int i = 0; i < 63; i++) {
-			checkboxes[i].setSelected(false);
-			checkboxes[i].setEnabled(true);
-		}
-		int numPlayers = gamestate.getNumPlayers();
-		switch (numPlayers){
+	private void setIllegalMonumentsDisabled() {
+		switch (gamestate.getNumPlayers()) {
 		case 1:
-			for (int i = 8; i <= 14; i++){
+			for (int i = 8; i <= 14; i++) {
 				checkboxes[i].setEnabled(false);
 			}
-			for (int i = 24; i <= 34; i++){
+			for (int i = 24; i <= 34; i++) {
 				checkboxes[i].setEnabled(false);
 			}
-			for (int i = 48; i <= 62; i++){
+			for (int i = 48; i <= 62; i++) {
 				checkboxes[i].setEnabled(false);
 			}
 			break;
 		case 2:
-			for (int i = 8; i <= 14; i++){
+			for (int i = 8; i <= 14; i++) {
 				checkboxes[i].setEnabled(false);
 			}
-			for (int i = 48; i <= 62; i++){
+			for (int i = 48; i <= 62; i++) {
 				checkboxes[i].setEnabled(false);
 			}
 			break;
 		case 3:
-			for (int i = 24; i <= 34; i++){
+			for (int i = 24; i <= 34; i++) {
 				checkboxes[i].setEnabled(false);
 			}
 			break;
 		}
+	}
+
+	/**
+	 * This method sets all checkboxes enabled, then disables the relevant ones.
+	 * It also updates selectedness.
+	 */
+	private void updateCheckboxes() {
+		for (int i = 0; i < 63; i++) {
+			checkboxes[i].setSelected(false);
+			checkboxes[i].setEnabled(true);
+		}
+		setIllegalMonumentsDisabled();
 		for (int i = 0; i < gamestate.getNumPlayers() + 3; i++) {
 			int index = i;
-			if (gamestate.getNumPlayers() == 1){
-				switch (i){
+			if (gamestate.getNumPlayers() == 1) {
+				switch (i) {
 				case 0:
 					index = 0;
 					break;
@@ -530,11 +543,10 @@ public class MonumentPanel extends JPanel {
 					break;
 				case 3:
 					index = 5;
-					break;						
+					break;
 				}
-			}
-			else if (gamestate.getNumPlayers() == 2){
-				switch (i){
+			} else if (gamestate.getNumPlayers() == 2) {
+				switch (i) {
 				case 0:
 					index = 0;
 					break;
@@ -551,9 +563,8 @@ public class MonumentPanel extends JPanel {
 					index = 5;
 					break;
 				}
-			}
-			else if (gamestate.getNumPlayers() == 3){
-				switch (i){
+			} else if (gamestate.getNumPlayers() == 3) {
+				switch (i) {
 				case 0:
 					index = 0;
 					break;
@@ -574,8 +585,7 @@ public class MonumentPanel extends JPanel {
 					break;
 				}
 			}
-			
-			
+
 			int population = gamestate.getPlayer(gamestate.getCurrentPlayer())
 					.getMonument(i).currentPopulation();
 			for (int p = 0; p < population; p++) {
@@ -585,28 +595,28 @@ public class MonumentPanel extends JPanel {
 					checkboxes[p].setEnabled(false);
 					break;
 				case 1:
-					checkboxes[p+3].setSelected(true);
-					checkboxes[p+3].setEnabled(false);
+					checkboxes[p + 3].setSelected(true);
+					checkboxes[p + 3].setEnabled(false);
 					break;
 				case 2:
-					checkboxes[p+8].setSelected(true);
-					checkboxes[p+8].setEnabled(false);
+					checkboxes[p + 8].setSelected(true);
+					checkboxes[p + 8].setEnabled(false);
 					break;
 				case 3:
-					checkboxes[p+15].setSelected(true);
-					checkboxes[p+15].setEnabled(false);
+					checkboxes[p + 15].setSelected(true);
+					checkboxes[p + 15].setEnabled(false);
 					break;
 				case 4:
-					checkboxes[p+24].setSelected(true);
-					checkboxes[p+24].setEnabled(false);
+					checkboxes[p + 24].setSelected(true);
+					checkboxes[p + 24].setEnabled(false);
 					break;
 				case 5:
-					checkboxes[p+35].setSelected(true);
-					checkboxes[p+35].setEnabled(false);
+					checkboxes[p + 35].setSelected(true);
+					checkboxes[p + 35].setEnabled(false);
 					break;
 				case 6:
-					checkboxes[p+48].setSelected(true);
-					checkboxes[p+48].setEnabled(false);
+					checkboxes[p + 48].setSelected(true);
+					checkboxes[p + 48].setEnabled(false);
 					break;
 				}
 			}
@@ -614,9 +624,9 @@ public class MonumentPanel extends JPanel {
 	}
 
 	public static void main(String[] args) {
-		String[] names = { "Matt"};
+		String[] names = { "Matt" };
 		Game game = new Game(names);
-		MonumentPanel mpanel = new MonumentPanel(game);
+		MonumentPanel mpanel = new MonumentPanel(game, new MainWindow());
 		JPanel outerpanel = new JPanel();
 		outerpanel.setLayout(new BorderLayout());
 		outerpanel.add(mpanel, BorderLayout.CENTER);
@@ -635,42 +645,130 @@ public class MonumentPanel extends JPanel {
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
+
 	public class BuyListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			switch (gamestate.getNumPlayers()){
-			case 1:
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(0), 0);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(1), 1);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(3), 2);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(5), 3);
-				break;
-			case 2:
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(0), 0);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(1), 1);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(3), 2);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(4), 3);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(5), 4);
-				break;
-			case 3:
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(0), 0);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(1), 1);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(2), 2);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(3), 3);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(5), 4);
-				gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(6), 5);
-				break;
-			default:
-				for(int i=0; i<7; i++){
-					gamestate.getPlayer(gamestate.getCurrentPlayer()).buyMonumentWorkers(getSelectedWorkersForMonument(i), i);
-				}
-			}
-			
+			buyWorkers();
 			gamestate.nextTurn();
-			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()).getName() +"'s turn");
-			updateCheckboxes();	
-		}	
+			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer())
+					.getName() + "'s turn");
+			updateCheckboxes();
+		}
+	}
+
+	@Override
+	public void doNewTurnThings() {
+		updateCheckboxes();
+		setBoxes(false);
+	}
+
+	@Override
+	public void turnPartIsThis(boolean thisTurnPart) {
+		if (!thisTurnPart
+				|| gamestate.getPlayer(gamestate.getCurrentPlayer())
+						.getWorkersAvailable() == 0) {
+			setBoxes(false);
+
+		} else {
+			updateCheckboxes();
+		}
+	}
+
+	private void setBoxes(boolean enabled) {
+		for (int i = 0; i < checkboxes.length; i++) {
+			checkboxes[i].setEnabled(enabled);
+		}
+	}
+
+	public void buyWorkers() {
+		switch (gamestate.getNumPlayers()) {
+		case 1:
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(0), 0);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(1), 1);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(3), 2);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(5), 3);
+			break;
+		case 2:
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(0), 0);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(1), 1);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(3), 2);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(4), 3);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(5), 4);
+			break;
+		case 3:
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(0), 0);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(1), 1);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(2), 2);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(3), 3);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(5), 4);
+			gamestate
+					.getPlayer(gamestate.getCurrentPlayer())
+					.buyMonumentWorkers(getSelectedWorkersForMonument(6), 5);
+			break;
+		default:
+			for (int i = 0; i < 7; i++) {
+				gamestate.getPlayer(gamestate.getCurrentPlayer())
+						.buyMonumentWorkers(
+								getSelectedWorkersForMonument(i), i);
+			}
+		}
+	}
+	
+	/**
+	 *  Used for testing purposes
+	 */
+	public class CheckListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			main.updateWorkersAvailable();
+		}
+	}
+
+	public int getTotalSelectedWorkers() {
+		int total = 0;
+		for (int i = 0; i < checkboxes.length; i++) {
+			if (checkboxes[i].isSelected() && checkboxes[i].isEnabled()) {
+				total++;
+			}
+		}
+		return total;
+	}
+
+	public void setWorkersLeftZero(boolean zero) {
+		for (int i = 0; i < checkboxes.length; i++)
+			if (!checkboxes[i].isSelected())
+				checkboxes[i].setEnabled(!zero);
+		setIllegalMonumentsDisabled();
 	}
 }

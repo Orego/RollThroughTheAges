@@ -77,16 +77,12 @@ public class GameTest {
 	public void testDisasters() {
 		assertEquals(0, g4.getPlayer(g4.getCurrentPlayer()).getTotalScore());
 
-		for (int i = 0; i < 4 * 4; i++) {
-			g4.getPlayer(i / 4).buyCityWorkers(6, 3 + i % 4);
-		}
-
 		// make drought happen
 		do {
 			g4.rollPlayersDice(0);
 		} while (g4.getPlayer(g4.getCurrentPlayer()).getSkulls() != 2);
 		g4.doneRolling();
-		g4.processDisasters();
+		g4.feedCitiesProcessDisasters();
 		assertEquals(-2, g4.getPlayer(g4.getCurrentPlayer()).getTotalScore());
 		g4.getPlayer(g4.getCurrentPlayer()).buyDevelopment(
 				DevelopmentList.MEDICINE);
@@ -99,7 +95,7 @@ public class GameTest {
 			g4.rollPlayersDice(1);
 		} while (g4.getPlayer(g4.getCurrentPlayer()).getSkulls() != 3);
 		g4.doneRolling();
-		g4.processDisasters();
+		g4.feedCitiesProcessDisasters();
 		assertEquals(0, g4.getPlayer(g4.getCurrentPlayer()).getTotalScore());
 		assertEquals(-3, g4.getPlayer(2).getTotalScore());
 		assertEquals(-3, g4.getPlayer(3).getTotalScore());

@@ -7,10 +7,12 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.Game;
@@ -35,7 +37,9 @@ public class MainWindow extends JFrame {
 	
 	private JLabel workersLeft, totalScore;
 	
-	private int turnPartEnding;
+
+	private MonumentPanel monuments;
+
 
 	public MainWindow() {
 		// create window
@@ -53,7 +57,7 @@ public class MainWindow extends JFrame {
 		this.add(titlePanel,BorderLayout.NORTH);
 
 		// create game
-		g = new Game(new String[] { "1", "2", "3", "4" });
+		g = new Game(new String[] { "1", "2"});//, "3", "4" });
 		
 
 		turnObservers = new ArrayList<TurnObserver>();
@@ -80,9 +84,12 @@ public class MainWindow extends JFrame {
 		right.setLayout(new BorderLayout());
 		cities = new CitiesPanel(g,this);
 		right.add(cities, BorderLayout.NORTH);
-		workersLeft = new JLabel("Workers left: 0");
+		workersLeft = new JLabel("Workers left: 0",JLabel.CENTER);
+		right.setBorder(BorderFactory.createEmptyBorder(0,12,12,12));//top, left, bottom, right);)
 		right.add(workersLeft,BorderLayout.CENTER);
-		
+		monuments = new MonumentPanel(g, this);
+		right.add(monuments,BorderLayout.SOUTH);
+		turnObservers.add(monuments);
 		turnObservers.add(cities);
 		this.add(right, BorderLayout.EAST);
 
@@ -93,7 +100,7 @@ public class MainWindow extends JFrame {
 	public void updatePanel() {
 		continueBtn.setText(Game.TURN_END_TEXT[g.getCurrentTurnPart()]);
 
-		turnPartEnding = g.getCurrentTurnPart() - 1;
+		int turnPartEnding = g.getCurrentTurnPart() - 1;
 
 		if (turnPartEnding == -1) {
 			
@@ -114,8 +121,9 @@ public class MainWindow extends JFrame {
 			workersLeft.setText("Workers left: "+g.getPlayer(g.getCurrentPlayer()).getWorkersAvailable());
 		} else if (turnPartEnding == Game.FEED_DISASTERS) {
 			// dice recorded, so update resources
-			g.processDisasters();
+			g.feedCitiesProcessDisasters();
 			cities.turnPartIsThis(true);
+			monuments.turnPartIsThis(true);
 			updateResources();
 			updateTotalScore();
 		} else if (turnPartEnding == Game.DEVELOPMENT) {
@@ -129,7 +137,8 @@ public class MainWindow extends JFrame {
 			cities.buyWorkers();
 			cities.turnPartIsThis(false);
 			developments.turnPartIsThis(true);
-			// TODO: monuments.buyWorkers();
+			monuments.buyWorkers();
+			monuments.turnPartIsThis(false);
 			workersLeft.setText("Workers left: 0");
 			updateTotalScore();
 		} else if (turnPartEnding == Game.DISCARD){
@@ -156,7 +165,7 @@ public class MainWindow extends JFrame {
 	private void doNewTurnThings() {
 		this.setTitle("Roll Through the Ages - Player: "
 				+ g.getPlayer(g.getCurrentPlayer()).getName());
-		totalScore.setText("Total score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
+		totalScore.setText("Player score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
 		for (TurnObserver to : turnObservers) {
 			to.doNewTurnThings();
 		}
@@ -167,7 +176,11 @@ public class MainWindow extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			g.nextTurnPart();
+			if (!g.nextTurnPart()){
+				//end of game
+				JOptionPane.showMessageDialog(null,"The game has ended.  The winner is player: "+g.getWinner());
+				System.exit(0);
+			}
 			updatePanel();
 		}
 	}
@@ -178,15 +191,14 @@ public class MainWindow extends JFrame {
 	}
 
 	public void updateWorkersAvailable() {
-		//TODO: subtract monument workers also
 		int workersAvailable = g.getPlayer(g.getCurrentPlayer())
-				.getWorkersAvailable()-cities.getTotalSelectedWorkers();
+				.getWorkersAvailable()-cities.getTotalSelectedWorkers()-monuments.getTotalSelectedWorkers();
 		
 		workersLeft.setText("Workers left: "
 				+ workersAvailable );
 		
 		cities.setWorkersLeftZero(workersAvailable == 0);
-		//TODO: monuments.setWorkersLeftZero(workersAvailable==0);
+		monuments.setWorkersLeftZero(workersAvailable==0);
 	}
 	
 	
