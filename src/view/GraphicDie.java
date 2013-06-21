@@ -1,6 +1,10 @@
 package view;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -31,6 +35,8 @@ public class GraphicDie extends JButton {
 
 	/** The int corresponding to the visible face. */
 	private int topFace;
+	
+	private boolean foodNotWorkers;
 
 	/**
 	 * Sets up the die.
@@ -47,6 +53,7 @@ public class GraphicDie extends JButton {
 		this.setPreferredSize(new Dimension(86, 83));
 		this.addActionListener(new SelectedListener());
 		this.setBorder(null);
+		foodNotWorkers = true;
 	}
 
 	/**
@@ -102,5 +109,26 @@ public class GraphicDie extends JButton {
 	 */
 	public boolean dieIsSelected() {
 		return this.getBorder() != null;
+	}
+	
+	@Override
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D)g;
+		Stroke s = g2.getStroke();
+		g2.setColor(new Color(0,255,0,150));
+		g2.setStroke(new BasicStroke(3));
+		if (topFace == Die.FOODWORKERS){
+			if (foodNotWorkers){//highlight the left
+				g2.drawRect(1, 2, 42, 81-5);
+			}else{
+				g2.drawRect(42+2, 2, 42-5, 81-5);
+			}
+		}
+		g2.setStroke(s);
+	}
+	
+	public boolean interpretAsFood(){
+		return foodNotWorkers;
 	}
 }
