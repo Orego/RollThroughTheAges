@@ -26,16 +26,17 @@ public class CitiesPanel extends JPanel implements TurnObserver {
 			new ImageIcon("Images/city6.jpg"),
 			new ImageIcon("Images/city7.jpg") };
 
-	/** The images associated with the different full cities. */
-	private static final ImageIcon[] CITY_IMAGES_SELECTED = {
-			new ImageIcon("Images/city4selected.jpg"),
-			new ImageIcon("Images/city5selected.jpg"),
-			new ImageIcon("Images/city6selected.jpg"),
-			new ImageIcon("Images/city7selected.jpg") };
-
+	
+	/** The city images */
 	private JLabel[] cities;
+	
+	/** The checkboxes associated with workers */
 	private JCheckBox[] checkboxes;
+	
+	/** The current player*/
 	private static JLabel name;
+	
+	/** Holds information about the state of the game*/
 	private Game gamestate;
 
 	private MainWindow main;
@@ -333,6 +334,9 @@ public class CitiesPanel extends JPanel implements TurnObserver {
 		this.setBounds(0, 0, 200, 100);
 	}
 
+	/**
+	 *  Used for testing purposes
+	 */
 	public class CheckListener implements ActionListener {
 
 		@Override
@@ -346,7 +350,10 @@ public class CitiesPanel extends JPanel implements TurnObserver {
 			// + "\n");
 		}
 	}
-
+	
+	/** 
+	 *  Used in main to show customer progress
+	 */
 	public class BuyListener implements ActionListener {
 
 		@Override
