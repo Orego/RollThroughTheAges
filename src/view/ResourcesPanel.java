@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -13,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import model.Game;
 import model.PlayerResources;
@@ -39,6 +41,18 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 	
 	/** The worth of total goods. */
 	private JLabel totalWorth;
+	
+	/** The total amount of money for a turn */
+	private JLabel turnMoney;
+	
+	/** The buttons for resources */
+	private JButton resourceBtns[];
+	
+	/** The selected border. */
+	private static final Border selectedBorder = BorderFactory
+			.createCompoundBorder(
+					BorderFactory.createLineBorder(Color.BLACK, 1),
+					BorderFactory.createLineBorder(Color.RED, 2));
 
 	public ResourcesPanel(Game game) {
 		this.game = game;
@@ -54,17 +68,20 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		setPreferredSize(new Dimension(60 * 3, 40 * 7));
 		this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));// top,left,bottom,right
 
+		resourceBtns = new JButton[5];
+		
 		this.add(new JLabel("Goods:"));
 		this.add(new JLabel("Amount:"));
 		this.add(new JLabel("Worth:"));
 		for (int i = 4; i >= 0; i--) {
-			JButton button = new JButton(RESOURCE_IMAGES[i]);
-			button.setFocusPainted(false);
-			button.setMargin(new Insets(0, 0, 0, 0));
-			button.setContentAreaFilled(false);
-			button.setBorderPainted(false);
-			button.setOpaque(false);
-			this.add(button);
+			resourceBtns[i] = new JButton(RESOURCE_IMAGES[i]);
+			resourceBtns[i].setFocusPainted(false);
+			resourceBtns[i].setMargin(new Insets(0, 0, 0, 0));
+			resourceBtns[i].setContentAreaFilled(false);
+			resourceBtns[i].setBorderPainted(false);
+			resourceBtns[i].setOpaque(false);
+			resourceBtns[i].addActionListener(new ResourceListener());
+			this.add(resourceBtns[i]);
 			amountLabel[i] = new JLabel("0");
 			this.add(amountLabel[i]);
 			worthLabel[i] = new JLabel("0");
@@ -75,6 +92,12 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		totalWorth = new JLabel("0");
 		this.add(totalAmount);
 		this.add(totalWorth);
+		
+		this.add(new JLabel("Money:"));
+		turnMoney = new JLabel("0");
+		this.add(turnMoney);
+		this.add(new JLabel(""));
+		
 		this.add(new JLabel(RESOURCE_IMAGES[5]));
 		amountLabel[PlayerResources.FOOD] = new JLabel("3");
 		this.add(amountLabel[PlayerResources.FOOD]);
@@ -133,6 +156,8 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		int totalAmount = 0, totalWorth = 0;
 		for (int i = 0; i < 6; i++) {
 			if (i != PlayerResources.FOOD) {
+				if (r.getWorth(i) > 0) resourceBtns[i].setEnabled(true);
+				else resourceBtns[i].setEnabled(false);
 				totalWorth += r.getWorth(i);
 				totalAmount += r.getAmount(i);
 			}
@@ -150,6 +175,8 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		int totalAmount = 0, totalWorth = 0;
 		for (int i = 0; i < 6; i++) {
 			if (i != PlayerResources.FOOD) {
+				if (worth[i] > 0) resourceBtns[i].setEnabled(true);
+				else resourceBtns[i].setEnabled(false);
 				totalWorth += worth[i];
 				totalAmount += amount[i];
 			}
@@ -166,4 +193,18 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		this.setEnabled(thisTurnPart);
 	}
 
+	public class ResourceListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JButton btn = (JButton) e.getSource();
+			if (btn.getBorder() == null){
+				
+			}
+			else
+				btn.setBorder(null);
+		}
+		
+	}
+	
 }

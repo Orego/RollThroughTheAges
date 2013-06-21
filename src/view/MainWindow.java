@@ -53,12 +53,6 @@ public class MainWindow extends JFrame {
 		// create game
 		g = new Game(new String[] { "1", "2", "3", "4" });
 		
-		//TODO: take this out later
-		for (int i=0; i<g.getNumPlayers(); i++){
-			for (int j=3; j<7; j++){
-				g.getPlayer(i).buyCityWorkers(15, j);
-			}
-		}
 
 		turnObservers = new ArrayList<TurnObserver>();
 
@@ -171,4 +165,6 @@ public class MainWindow extends JFrame {
 		cities.setWorkersLeftZero(workersAvailable == 0);
 		//TODO: monuments.setWorkersLeftZero(workersAvailable==0);
 	}
+	
+	
 }

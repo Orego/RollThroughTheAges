@@ -371,9 +371,19 @@ public class Player {
 		addFood(roller.getFood());
 		workersAvailable = roller.getWorkers();
 		turnMoney = roller.getCoin();
-		for (int i = 0; i < 5; i++) {
-			turnMoney += resources.getWorth(i);
-		}
+		
+		//TODO: comment this part out!!!!
+//		for (int i = 0; i < 5; i++) {
+//			turnMoney += resources.getWorth(i);
+//		}
+	}
+	
+	protected void addResourceToTurnMoney(int resource){
+		turnMoney += resources.getWorth(resource);
+	}
+	
+	protected void removeResourceToTurnMoney(int resource){
+		turnMoney -= resources.getWorth(resource);
 	}
 
 	protected void processDisasters() {
