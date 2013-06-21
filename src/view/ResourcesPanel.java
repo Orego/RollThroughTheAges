@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -29,6 +31,15 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 			new ImageIcon("Images/cloth.jpg"),
 			new ImageIcon("Images/spearhead.jpg"),
 			new ImageIcon("Images/food2.jpg") };
+	
+	/** The images associated with the different selected resources. */
+	private static final ImageIcon[] SELECTED_RESOURCE_IMAGES = {
+			new ImageIcon("Images/woodselected.jpg"),
+			new ImageIcon("Images/stoneselected.jpg"),
+			new ImageIcon("Images/potteryselected.jpg"),
+			new ImageIcon("Images/clothselected.jpg"),
+			new ImageIcon("Images/spearheadselected.jpg"),
+			new ImageIcon("Images/food2selected.jpg") };
 
 	/** the game */
 	private Game game;
@@ -48,15 +59,17 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 	/** The buttons for resources */
 	private JButton resourceBtns[];
 	
+	private MainWindow main;
+	
 	/** The selected border. */
 	private static final Border selectedBorder = BorderFactory
 			.createCompoundBorder(
 					BorderFactory.createLineBorder(Color.BLACK, 1),
 					BorderFactory.createLineBorder(Color.RED, 2));
 
-	public ResourcesPanel(Game game) {
+	public ResourcesPanel(Game game, MainWindow main) {
 		this.game = game;
-		
+		this.main = main;
 		amountLabel = new JLabel[6];
 		worthLabel = new JLabel[6];
 		layoutGUI();
@@ -112,7 +125,7 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setPreferredSize(new Dimension(60 * 3, 40 * 8));
-		ResourcesPanel rp = new ResourcesPanel(new Game(new String[] {"1"}));
+		ResourcesPanel rp = new ResourcesPanel(new Game(new String[] {"1"}), new MainWindow());
 		panel.add(rp, BorderLayout.CENTER);
 		JButton changeAndUpdate = new JButton("+1 resource to each");
 		changeAndUpdate.addActionListener(rp.new ButtonListener());
@@ -145,6 +158,16 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		updateResources();
 		this.setEnabled(false);
 	}
+	
+	public List<Integer> getSelectedResources(){
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < 5; i++){
+			if (resourceBtns[i].getIcon() == SELECTED_RESOURCE_IMAGES[i]){
+				list.add(i);
+			}
+		}
+		return list;
+	}
 
 
 	/** Updates the displayed amount and worth of resources. */
@@ -167,7 +190,7 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		}
 		this.totalAmount.setText("" + totalAmount);
 		this.totalWorth.setText("" + totalWorth);
-		
+		updateTurnMoney();
 	}
 	
 	/** Updates the displayed amount and worth of resources. */
@@ -186,11 +209,22 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		}
 		this.totalAmount.setText("" + totalAmount);
 		this.totalWorth.setText("" + totalWorth);
+		updateTurnMoney();
 	}
 
 	@Override
 	public void turnPartIsThis(boolean thisTurnPart) {
 		this.setEnabled(thisTurnPart);
+	}
+	
+	public void updateSelected(){
+		for (int i = 0; i < 5; i++){
+			resourceBtns[i].setIcon(RESOURCE_IMAGES[i]);
+		}
+	}
+	
+	public void updateTurnMoney(){
+		turnMoney.setText(""+game.getPlayer(game.getCurrentPlayer()).getTurnMoney());
 	}
 
 	public class ResourceListener implements ActionListener {
@@ -198,11 +232,21 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton btn = (JButton) e.getSource();
-			if (btn.getBorder() == null){
-				
+			for (int i = 0; i < 5; i++){
+				if (btn == resourceBtns[i]) {
+					if (btn.getIcon() == RESOURCE_IMAGES[i]){
+						btn.setIcon(SELECTED_RESOURCE_IMAGES[i]);
+						game.getPlayer(game.getCurrentPlayer()).addResourceToTurnMoney(i);
+					}
+					else{
+						btn.setIcon(RESOURCE_IMAGES[i]);
+						game.getPlayer(game.getCurrentPlayer()).removeResourceToTurnMoney(i);
+					}
+					break;
+				}
 			}
-			else
-				btn.setBorder(null);
+			updateTurnMoney();
+			main.updateDevelopments();
 		}
 		
 	}

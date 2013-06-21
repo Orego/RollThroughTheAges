@@ -293,6 +293,14 @@ public class Player {
 				+ resources.getAmount(PlayerResources.WOOD) + "\nFood: "
 				+ resources.getAmount(PlayerResources.FOOD);
 	}
+	
+	public void removeResource(int resource){
+		resources.changeAmount(resource, resources.getAmount(resource) * (-1));
+	}
+	
+	public void bought(int amount){
+		turnMoney -= amount;
+	}
 
 	/** Returns the amount of food the player has */
 	public int getFood() {
@@ -378,11 +386,11 @@ public class Player {
 //		}
 	}
 	
-	protected void addResourceToTurnMoney(int resource){
+	public void addResourceToTurnMoney(int resource){
 		turnMoney += resources.getWorth(resource);
 	}
 	
-	protected void removeResourceToTurnMoney(int resource){
+	public void removeResourceToTurnMoney(int resource){
 		turnMoney -= resources.getWorth(resource);
 	}
 

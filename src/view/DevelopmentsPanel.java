@@ -113,7 +113,7 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 		updateDevelopmentChecks();
 	}
 	
-	private void updateDevelopmentChecks(){
+	protected void updateDevelopmentChecks(){
 		for(int i = 0; i < developments.length; i++ ){
 			DevelopmentList devs = gamestate.getPlayersDevelopmentList(gamestate.getCurrentPlayer());
 			if (devs.isDevelopmentBought(i)){
@@ -130,7 +130,7 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 		}
 	}
 	
-	private void setDevelopmentChecks(boolean enabled){
+	protected void setDevelopmentChecks(boolean enabled){
 		for (int i=0; i<developments.length; i++)
 			developments[i].setEnabled(enabled);
 	}
@@ -151,6 +151,7 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 		for (int i = 0; i < developments.length; i++){
 			if (developments[i].isSelected() && developments[i].isEnabled()){
 				gamestate.getPlayersDevelopmentList(gamestate.getCurrentPlayer()).buyDevelopment(i);
+				gamestate.getPlayer(gamestate.getCurrentPlayer()).bought(DevelopmentList.DEVELOPMENT_COSTS[i]);
 			}
 		}
 	}

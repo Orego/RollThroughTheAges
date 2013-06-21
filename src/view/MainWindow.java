@@ -34,6 +34,8 @@ public class MainWindow extends JFrame {
 	private List<TurnObserver> turnObservers;
 	
 	private JLabel workersLeft, totalScore;
+	
+	private int turnPartEnding;
 
 	public MainWindow() {
 		// create window
@@ -63,7 +65,7 @@ public class MainWindow extends JFrame {
 		dice = new DicePanel(g);
 		turnObservers.add(dice);
 		center.add(dice, BorderLayout.NORTH);
-		resources = new ResourcesPanel(g);
+		resources = new ResourcesPanel(g, this);
 		turnObservers.add(resources);
 		center.add(resources, BorderLayout.WEST);
 		developments = new DevelopmentsPanel(g);
@@ -91,7 +93,7 @@ public class MainWindow extends JFrame {
 	public void updatePanel() {
 		continueBtn.setText(Game.TURN_END_TEXT[g.getCurrentTurnPart()]);
 
-		int turnPartEnding = g.getCurrentTurnPart() - 1;
+		turnPartEnding = g.getCurrentTurnPart() - 1;
 
 		// TODO: put discarding goods in
 		if (turnPartEnding == -1) {
@@ -110,8 +112,14 @@ public class MainWindow extends JFrame {
 			updateTotalScore();
 		} else if (turnPartEnding == Game.DEVELOPMENT) {
 			developments.buyDevelopment();
+			List<Integer> ints = resources.getSelectedResources();
+			for (int i = 0; i < ints.size(); i++){
+				g.getPlayer(g.getCurrentPlayer()).removeResource(ints.get(i));
+			}
 			developments.turnPartIsThis(false);
 			updateTotalScore();
+			updateResources();
+			resources.updateTurnMoney();
 		} else if (turnPartEnding == Game.BUILD) {
 			cities.buyWorkers();
 			cities.turnPartIsThis(false);
@@ -130,6 +138,13 @@ public class MainWindow extends JFrame {
 	private void updateResources() {
 		resources.updateResources();
 	}
+	
+	public void updateDevelopments(){
+		if (g.getCurrentTurnPart() == Game.DEVELOPMENT){
+			developments.setDevelopmentChecks(true);
+			developments.updateDevelopmentChecks();
+		}
+	}
 
 	private void doNewTurnThings() {
 		this.setTitle("Roll Through the Ages - Player: "
@@ -138,6 +153,7 @@ public class MainWindow extends JFrame {
 		for (TurnObserver to : turnObservers) {
 			to.doNewTurnThings();
 		}
+		resources.updateSelected();
 	}
 
 	public class ContinueListener implements ActionListener {
