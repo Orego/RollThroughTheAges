@@ -1,4 +1,5 @@
 package model;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -25,6 +26,13 @@ public class RollTracker {
 
 	/** The number of rerolls since last roll. */
 	private int rerollCount;
+
+	private DevelopmentList developments;
+
+	public RollTracker(DevelopmentList devs) {
+		developments = devs;
+
+	}
 
 	/**
 	 * Rolls the given list of dice.
@@ -64,14 +72,29 @@ public class RollTracker {
 			unit = 1;
 		switch (topFace) {
 		case Die.FOOD:
-			food += unit * 3;
+			if (developments.isDevelopmentBought(DevelopmentList.AGRICULTURE)) {
+				food += unit * 4;
+			} else {
+				food += unit * 3;
+			}
 			break;
 		case Die.COIN:
-			coin += unit * 7;
+			if (developments.isDevelopmentBought(DevelopmentList.COINAGE)) {
+				coin += unit * 12;
+			} else {
+				coin += unit * 7;
+			}
 			break;
 		case Die.FOODWORKERS:
 			if (countAsFood)
-				food += unit * 2;
+				if (developments
+						.isDevelopmentBought(DevelopmentList.AGRICULTURE))
+					food += unit * 3;
+				else
+					food += unit * 2;
+
+			else if (developments.isDevelopmentBought(DevelopmentList.MASONRY))
+					workers += unit * 3;
 			else
 				workers += unit * 2;
 			break;
@@ -83,30 +106,36 @@ public class RollTracker {
 			goods += unit * 2;
 			break;
 		case Die.WORKERS:
-			workers += unit * 3;
+			if (developments.isDevelopmentBought(DevelopmentList.MASONRY))
+				workers += unit * 4;
+			else
+				workers += unit * 3;
 			break;
 		}
 	}
-	
+
 	/** The number of rerolls left. */
-	public int getRerollsLeft(){
-		return 2-rerollCount;
+	public int getRerollsLeft() {
+		return 2 - rerollCount;
 	}
 
 	/**
 	 * Rerolls the dice at the indices indicated by the list of indices. Note:
-	 * leadership is not taken into account, so last roll would be ignored. 
+	 * leadership is not taken into account, so last roll would be ignored.
 	 * 
 	 * @param indices
 	 * @param dice
 	 * @return Returns true if reroll was possible
 	 */
-	public boolean reroll(List<Integer> indices, List<Die> dice) throws FlippedSkullException {
-		if (rerollCount > 1 || indices == null || indices.isEmpty())// rerollCount will be 0 1st
-													// time and 1 2nd
+	public boolean reroll(List<Integer> indices, List<Die> dice)
+			throws FlippedSkullException {
+		if (rerollCount > 1 || indices == null || indices.isEmpty())// rerollCount
+																	// will be 0
+																	// 1st
+			// time and 1 2nd
 			return false;
-		
-		if (rerollContainsSkulls(indices,dice))
+
+		if (rerollContainsSkulls(indices, dice))
 			throw new FlippedSkullException();
 
 		rerollCount++;
@@ -122,22 +151,24 @@ public class RollTracker {
 		}
 		return true;
 	}
-	
-	private class FlippedSkullException extends RuntimeException {}
-	
+
+	private class FlippedSkullException extends RuntimeException {
+	}
+
 	/**
 	 * Checks whether a reroll would flip skulls
+	 * 
 	 * @param indices
 	 * @param dice
 	 * @return
 	 */
-	public boolean rerollContainsSkulls(List<Integer> indices, List<Die> dice){
+	public boolean rerollContainsSkulls(List<Integer> indices, List<Die> dice) {
 		for (int i = 0; i < indices.size(); i++)
 			if (dice.get(indices.get(i)).getTopFace() == Die.SKULL)
 				return true;
 		return false;
 	}
-	
+
 	/**
 	 * @return The amount of food most recently rolled.
 	 */
@@ -174,13 +205,13 @@ public class RollTracker {
 	}
 
 	public static void main(String[] args) {
-		RollTracker roll = new RollTracker();
+		RollTracker roll = new RollTracker(new DevelopmentList());
 		ArrayList<Die> dice = new ArrayList<Die>();
 		for (int i = 0; i < 6; i++) {
 			dice.add(new Die());
 		}
 		roll.rollDice(dice);
-		
+
 		System.out.println("Here are the dice rolled:");
 		for (int i = 0; i < dice.size(); i++) {
 			System.out.println(dice.get(i));
@@ -197,7 +228,7 @@ public class RollTracker {
 				ranNum = (int) (Math.random() * 6);
 				ints.add(ranNum);
 			}
-			System.out.println("Rerolling die "+ranNum);
+			System.out.println("Rerolling die " + ranNum);
 			System.out.println("Reroll occurred: " + roll.reroll(ints, dice));
 			System.out.println("Here are the current dice:");
 			for (int j = 0; j < dice.size(); j++) {

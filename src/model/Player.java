@@ -53,8 +53,9 @@ public class Player {
 		for (int i = 0; i < 3; i++) {
 			dice.add(new Die());
 		}
-		roller = new RollTracker();
+
 		developments = new DevelopmentList();
+		roller = new RollTracker(developments);
 	}
 
 	/** Returns the player's total score. */
@@ -424,4 +425,5 @@ public class Player {
 			disasterCount -= offBy;
 		}
 	}
+	
 }

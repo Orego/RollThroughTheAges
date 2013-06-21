@@ -18,7 +18,7 @@ public class RollTrackerTest {
 		for (int i = 0; i < 6; i++) {
 			dice.add(new Die());
 		}
-		track = new RollTracker();
+		track = new RollTracker(new DevelopmentList());
 	}
 
 	@Test

@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.Game;
@@ -57,11 +58,11 @@ public class MainWindow extends JFrame {
 		g = new Game(new String[] { "1", "2"});//, "3", "4" });
 		
 		//TODO: take this out later
-//		for (int i=0; i<g.getNumPlayers(); i++){
-//			for (int j=3; j<7; j++){
-//				g.getPlayer(i).buyCityWorkers(15, j);
-//			}
-//		}
+		for (int i=0; i<g.getNumPlayers(); i++){
+			for (int j=3; j<7; j++){
+				g.getPlayer(i).buyCityWorkers(15, j);
+			}
+		}
 
 		turnObservers = new ArrayList<TurnObserver>();
 
@@ -158,7 +159,11 @@ public class MainWindow extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			g.nextTurnPart();
+			if (!g.nextTurnPart()){
+				//end of game
+				JOptionPane.showMessageDialog(null,"The game has ended.  The winner is player: "+g.getWinner());
+				System.exit(0);
+			}
 			updatePanel();
 		}
 	}
