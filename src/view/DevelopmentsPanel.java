@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -139,7 +141,7 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			buyDevelopment();
+			buyDevelopment(new ArrayList<Integer>());
 			gamestate.nextTurn();
 			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()).getName() + "'s turn");
 			updateDevelopmentChecks();
@@ -147,11 +149,14 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 		
 	}
 	
-	public void buyDevelopment(){
+	public void buyDevelopment(List<Integer> ints){
 		for (int i = 0; i < developments.length; i++){
 			if (developments[i].isSelected() && developments[i].isEnabled()){
 				gamestate.getPlayersDevelopmentList(gamestate.getCurrentPlayer()).buyDevelopment(i);
 				gamestate.getPlayer(gamestate.getCurrentPlayer()).bought(DevelopmentList.DEVELOPMENT_COSTS[i]);
+				for (int j = 0; j < ints.size(); j++){
+					gamestate.getPlayer(gamestate.getCurrentPlayer()).removeResource(ints.get(j));
+				}
 			}
 		}
 	}

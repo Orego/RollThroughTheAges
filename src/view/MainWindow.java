@@ -95,8 +95,16 @@ public class MainWindow extends JFrame {
 
 		turnPartEnding = g.getCurrentTurnPart() - 1;
 
-		// TODO: put discarding goods in
 		if (turnPartEnding == -1) {
+			
+			List<Integer> ints = resources.getSelectedResources();
+			int oldPlayer = g.getCurrentPlayer() -1;
+			if (oldPlayer == -1) oldPlayer = g.getNumPlayers() - 1;
+			System.out.println("player "+ oldPlayer);
+			for (int i = 0; i < ints.size(); i++){
+				g.getPlayer(oldPlayer).removeResource(ints.get(i));
+			}
+			
 			doNewTurnThings();
 			dice.turnPartIsThis(true);
 		} else if (turnPartEnding == Game.ROLL_DICE) {
@@ -111,11 +119,8 @@ public class MainWindow extends JFrame {
 			updateResources();
 			updateTotalScore();
 		} else if (turnPartEnding == Game.DEVELOPMENT) {
-			developments.buyDevelopment();
 			List<Integer> ints = resources.getSelectedResources();
-			for (int i = 0; i < ints.size(); i++){
-				g.getPlayer(g.getCurrentPlayer()).removeResource(ints.get(i));
-			}
+			developments.buyDevelopment(ints);
 			developments.turnPartIsThis(false);
 			updateTotalScore();
 			updateResources();
@@ -127,7 +132,9 @@ public class MainWindow extends JFrame {
 			// TODO: monuments.buyWorkers();
 			workersLeft.setText("Workers left: 0");
 			updateTotalScore();
-		} else
+		} else if (turnPartEnding == Game.DISCARD){
+			
+		}else
 			updateResources();
 	}
 	
