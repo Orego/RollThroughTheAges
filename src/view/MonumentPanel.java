@@ -614,7 +614,7 @@ public class MonumentPanel extends JPanel {
 	}
 
 	public static void main(String[] args) {
-		String[] names = { "Matt", "Candice", "Alex", "Lauren"};
+		String[] names = { "Matt"};
 		Game game = new Game(names);
 		MonumentPanel mpanel = new MonumentPanel(game);
 		JPanel outerpanel = new JPanel();
