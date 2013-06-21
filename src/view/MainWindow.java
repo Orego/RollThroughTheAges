@@ -52,6 +52,13 @@ public class MainWindow extends JFrame {
 
 		// create game
 		g = new Game(new String[] { "1", "2", "3", "4" });
+		
+		//TODO: take this out later
+		for (int i=0; i<g.getNumPlayers(); i++){
+			for (int j=3; j<7; j++){
+				g.getPlayer(i).buyCityWorkers(15, j);
+			}
+		}
 
 		turnObservers = new ArrayList<TurnObserver>();
 
@@ -105,19 +112,25 @@ public class MainWindow extends JFrame {
 			// dice recorded, so update resources
 			g.processDisasters();
 			cities.turnPartIsThis(true);
-			totalScore.setText("Player score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
 			updateResources();
+			updateTotalScore();
 		} else if (turnPartEnding == Game.DEVELOPMENT) {
 			developments.buyDevelopment();
 			developments.turnPartIsThis(false);
+			updateTotalScore();
 		} else if (turnPartEnding == Game.BUILD) {
 			cities.buyWorkers();
 			cities.turnPartIsThis(false);
 			developments.turnPartIsThis(true);
 			// TODO: monuments.buyWorkers();
 			workersLeft.setText("Workers left: 0");
+			updateTotalScore();
 		} else
 			updateResources();
+	}
+	
+	private void updateTotalScore(){
+		totalScore.setText("Player score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
 	}
 
 	private void updateResources() {

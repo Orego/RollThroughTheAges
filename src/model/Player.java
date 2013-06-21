@@ -406,6 +406,7 @@ public class Player {
 	public void inflictRevolt(){
 		for (int i=0; i<5; i++){
 			resources.changeAmount(i, -resources.getAmount(i));
+			turnMoney = roller.getCoin();
 		}
 	}
 

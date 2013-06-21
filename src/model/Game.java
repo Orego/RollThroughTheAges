@@ -276,8 +276,8 @@ public class Game {
 					players.get(i).infectWithPestilence();
 				}
 			}
-		} else if (numSkulls == 5) {
-			if (players.get(currentplayer).getDevelopementList().isDevelopmentBought(DevelopmentList.RELIGION)){
+		} else if (numSkulls >= 5) {
+			if (!players.get(currentplayer).getDevelopementList().isDevelopmentBought(DevelopmentList.RELIGION)){
 				players.get(currentplayer).inflictRevolt();
 			}
 			else{
