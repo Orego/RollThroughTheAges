@@ -137,7 +137,7 @@ public class RollTracker {
 				return true;
 		return false;
 	}
-
+	
 	/**
 	 * @return The amount of food most recently rolled.
 	 */

@@ -127,6 +127,11 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 		}
 	}
 	
+	private void setDevelopmentChecks(boolean enabled){
+		for (int i=0; i<developments.length; i++)
+			developments[i].setEnabled(enabled);
+	}
+	
 	private class BuyListener implements ActionListener {
 
 		@Override
@@ -190,6 +195,16 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 	@Override
 	public void doNewTurnThings() {
 		updateDevelopmentChecks();
+		setDevelopmentChecks(false);
+	}
+
+	@Override
+	public void turnPartIsThis(boolean thisTurnPart) {
+		if (thisTurnPart){
+			updateDevelopmentChecks();
+		}
+		else
+			setDevelopmentChecks(false);
 	}
 	
 }

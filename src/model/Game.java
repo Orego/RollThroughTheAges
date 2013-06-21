@@ -122,6 +122,7 @@ public class Game {
 		if ((currentplayer == 0) && isEndofGame()) {
 			return false;
 		}
+		
 		return true;
 	}
 
@@ -258,5 +259,9 @@ public class Game {
 			System.out.println("Player " + g2.getPlayer(i).getName()
 					+ " has score " + g2.getPlayer(i).getTotalScore());
 		}
+	}
+
+	public void doneRolling() {
+		players.get(currentplayer).doneRolling();
 	}
 }

@@ -29,7 +29,9 @@ public class DicePanel extends JPanel implements TurnObserver{
 	private Game gamestate;
 	
 	/** Informs the user of rolls left. */
-	private static JLabel rollCount;
+	private JLabel rollCount;
+	
+	private JButton reroll;
 
 	/**
 	 * Sets up the dice display
@@ -40,15 +42,24 @@ public class DicePanel extends JPanel implements TurnObserver{
 		gamestate = game;
 		int currPlayer = gamestate.getCurrentPlayer();
 		graphicDieList = new ArrayList<GraphicDie>();
-		this.setLayout(new GridLayout(1,7));
+		JPanel dicePanel = new JPanel();
+		dicePanel.setLayout(new GridLayout(1,7));
 		for (int i=0; i<7; i++){
 			if (i<gamestate.getPlayersDice(currPlayer).size())
 				graphicDieList.add(new GraphicDie(gamestate.getPlayersDice(currPlayer).get(i).getTopFace(),true));
 			else
 				graphicDieList.add(new GraphicDie((int)(Math.random()*6),false));
-			this.add(graphicDieList.get(i));
+			dicePanel.add(graphicDieList.get(i));
 		}
-		setPreferredSize(new Dimension(86*7,83));
+		this.add(dicePanel, BorderLayout.CENTER);
+		JPanel rerollPanel = new JPanel();
+		reroll = new JButton("Reroll dice");
+		reroll.addActionListener(new RerollListener());
+		rollCount = new JLabel("Rerolls left: "+2);
+		rerollPanel.add(rollCount);
+		rerollPanel.add(reroll);
+		this.add(rerollPanel, BorderLayout.SOUTH);
+		setPreferredSize(new Dimension(86*7,83+50));
 
 	}
 
@@ -58,6 +69,7 @@ public class DicePanel extends JPanel implements TurnObserver{
 		List<Die> dice = gamestate.getPlayersDice(currPlayer);
 		for (int i=0; i<dice.size(); i++){
 			graphicDieList.get(i).changeFace(dice.get(i).getTopFace());
+			graphicDieList.get(i).setEnabled(true);
 		}
 	}
 	
@@ -91,13 +103,13 @@ public class DicePanel extends JPanel implements TurnObserver{
 		JButton roll = new JButton ("Next player's turn");
 		roll.addActionListener(dicePanel.new NextTurnListener());
 		buttonPanel.add(roll);
-		JButton reroll = new JButton ("Reroll selected");
-		reroll.addActionListener(dicePanel.new RerollListener());
-		rollCount = new JLabel("Rerolls left: "+2);
-		buttonPanel.add(reroll);
-		buttonPanel.add(rollCount);
+		//JButton reroll = new JButton ("Reroll selected");
+		//reroll.addActionListener(dicePanel.new RerollListener());
+		//rollCount = new JLabel("Rerolls left: "+2);
+		//buttonPanel.add(reroll);
+		//buttonPanel.add(rollCount);
 		outerPanel.add(buttonPanel,BorderLayout.SOUTH);
-		outerPanel.setPreferredSize(new Dimension(86*7,120));
+		outerPanel.setPreferredSize(new Dimension(86*7,120+50));
 		frame.add(outerPanel);
 		frame.pack();
 		frame.setVisible(true);
@@ -122,6 +134,9 @@ public class DicePanel extends JPanel implements TurnObserver{
 		public void actionPerformed(ActionEvent arg0) {
 			gamestate.rerollPlayersDice(gamestate.getCurrentPlayer(), getSelectedIndices());
 			rollCount .setText("Rerolls left: "+gamestate.getPlayersNumRerolls(gamestate.getCurrentPlayer()));
+			if (gamestate.getPlayersNumRerolls(gamestate.getCurrentPlayer())==0){
+				reroll.setEnabled(false);
+			}
 			updateGraphicDice();
 			repaint();
 		}
@@ -134,11 +149,16 @@ public class DicePanel extends JPanel implements TurnObserver{
 		//rollCount .setText("Rerolls left: "+gamestate.getPlayersNumRerolls(gamestate.getCurrentPlayer()));
 		updateGraphicDice();
 		repaint();
-		
+		reroll.setEnabled(true);
+		rollCount .setText("Rerolls left: "+gamestate.getPlayersNumRerolls(gamestate.getCurrentPlayer()));
 	}
 
-	public void updateGame() {
-		// TODO Auto-generated method stub
-		
+	@Override
+	public void turnPartIsThis(boolean thisTurnPart) {
+		reroll.setEnabled(thisTurnPart);
+		if (!thisTurnPart){
+			//update resources
+			gamestate.doneRolling();
+		}
 	}
 }

@@ -32,6 +32,8 @@ public class MainWindow extends JFrame {
 	private JButton continueBtn;
 
 	private List<TurnObserver> turnObservers;
+	
+	private JLabel workersLeft;
 
 	public MainWindow() {
 		// create window
@@ -69,8 +71,12 @@ public class MainWindow extends JFrame {
 
 		// cities/monuments panel
 		JPanel right = new JPanel();
-		cities = new CitiesPanel(g);
+		right.setLayout(new BorderLayout());
+		cities = new CitiesPanel(g,this);
 		right.add(cities, BorderLayout.NORTH);
+		workersLeft = new JLabel("Workers left: 0");
+		right.add(workersLeft,BorderLayout.CENTER);
+		
 		turnObservers.add(cities);
 		this.add(right, BorderLayout.EAST);
 
@@ -80,30 +86,36 @@ public class MainWindow extends JFrame {
 
 	public void updatePanel() {
 		continueBtn.setText(Game.TURN_END_TEXT[g.getCurrentTurnPart()]);
-		
-		int turnPartEnding = g.getCurrentTurnPart()-1;
-		
+
+		int turnPartEnding = g.getCurrentTurnPart() - 1;
+
 		// TODO: put discarding goods in
 		if (turnPartEnding == -1) {
 			doNewTurnThings();
-		} else if (turnPartEnding == Game.ROLL_DICE || turnPartEnding == Game.FEED_DISASTERS) {
+			dice.turnPartIsThis(true);
+		} else if (turnPartEnding == Game.ROLL_DICE) {
+			dice.turnPartIsThis(false);
 			// dice recorded, so update resources
+			updateResources();
+			workersLeft.setText("Workers left: "+g.getPlayer(g.getCurrentPlayer()).getWorkersAvailable());
+		} else if (turnPartEnding == Game.FEED_DISASTERS) {
+			// dice recorded, so update resources
+			cities.turnPartIsThis(true);
 			updateResources();
 		} else if (turnPartEnding == Game.DEVELOPMENT) {
 			developments.buyDevelopment();
+			developments.turnPartIsThis(false);
 		} else if (turnPartEnding == Game.BUILD) {
 			cities.buyWorkers();
+			cities.turnPartIsThis(false);
+			developments.turnPartIsThis(true);
 			// TODO: monuments.buyWorkers();
+			workersLeft.setText("Workers left: 0");
 		} else
 			updateResources();
-
-		if (g.getCurrentTurnPart() == 0) {
-			doNewTurnThings();
-		}
 	}
 
 	private void updateResources() {
-		dice.updateGame();
 		resources.updateResources();
 	}
 
@@ -115,6 +127,8 @@ public class MainWindow extends JFrame {
 		}
 
 	}
+	
+	
 
 	public class ContinueListener implements ActionListener {
 
@@ -129,5 +143,17 @@ public class MainWindow extends JFrame {
 	public static void main(String[] args) {
 		MainWindow window = new MainWindow();
 		window.pack();
+	}
+
+	public void updateWorkersAvailable() {
+		//TODO: subtract monument workers also
+		int workersAvailable = g.getPlayer(g.getCurrentPlayer())
+				.getWorkersAvailable()-cities.getTotalSelectedWorkers();
+		
+		workersLeft.setText("Workers left: "
+				+ workersAvailable );
+		
+		cities.setWorkersLeftZero(workersAvailable == 0);
+		//TODO: monuments.setWorkersLeftZero(workersAvailable==0);
 	}
 }

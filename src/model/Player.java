@@ -33,6 +33,8 @@ public class Player {
 
 	/** Holds the list of developments the player holds. */
 	private DevelopmentList developments;
+	
+	private int workersAvailable;
 
 	/**
 	 * @param name
@@ -200,7 +202,7 @@ public class Player {
 	}
 
 	/**
-	 * Adds workers to a particular city NOTE: needs work....
+	 * Adds workers to a particular city.  There's no check to make sure the number of workers is less than workers available.
 	 * 
 	 * @param workers
 	 *            the amount of workers added
@@ -208,7 +210,13 @@ public class Player {
 	 *            the city number
 	 */
 	public int buyCityWorkers(int workers, int city) {
-		return cities[city].addWorkers(workers);
+		boolean isFull = cities[city].isFull();
+		int over = cities[city].addWorkers(workers);
+		if (!isFull && cities[city].isFull()){
+			dice.add(new Die());
+		}
+		workersAvailable = workersAvailable - (workers - over);
+		return over;
 	}
 
 	/**
@@ -343,5 +351,15 @@ public class Player {
 		p = new Player(scan.nextLine(), 1);
 		System.out.println("Hello player " + p.getName());
 
+	}
+
+	public void doneRolling() {
+		addGoods(roller.getGoods());
+		addFood(roller.getFood());
+		workersAvailable = roller.getWorkers();
+	}
+	
+	public int getWorkersAvailable(){
+		return workersAvailable;
 	}
 }
