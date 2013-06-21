@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -34,6 +35,8 @@ public class MainWindow extends JFrame {
 	private List<TurnObserver> turnObservers;
 	
 	private JLabel workersLeft, totalScore;
+	
+	private MonumentPanel monuments;
 
 	public MainWindow() {
 		// create window
@@ -51,7 +54,7 @@ public class MainWindow extends JFrame {
 		this.add(titlePanel,BorderLayout.NORTH);
 
 		// create game
-		g = new Game(new String[] { "1", "2", "3", "4" });
+		g = new Game(new String[] { "1", "2"});//, "3", "4" });
 		
 		//TODO: take this out later
 //		for (int i=0; i<g.getNumPlayers(); i++){
@@ -84,9 +87,12 @@ public class MainWindow extends JFrame {
 		right.setLayout(new BorderLayout());
 		cities = new CitiesPanel(g,this);
 		right.add(cities, BorderLayout.NORTH);
-		workersLeft = new JLabel("Workers left: 0");
+		workersLeft = new JLabel("Workers left: 0",JLabel.CENTER);
+		right.setBorder(BorderFactory.createEmptyBorder(0,12,12,12));//top, left, bottom, right);)
 		right.add(workersLeft,BorderLayout.CENTER);
-		
+		monuments = new MonumentPanel(g, this);
+		right.add(monuments,BorderLayout.SOUTH);
+		turnObservers.add(monuments);
 		turnObservers.add(cities);
 		this.add(right, BorderLayout.EAST);
 
@@ -112,6 +118,7 @@ public class MainWindow extends JFrame {
 			// dice recorded, so update resources
 			g.feedCitiesProcessDisasters();
 			cities.turnPartIsThis(true);
+			monuments.turnPartIsThis(true);
 			updateResources();
 			updateTotalScore();
 		} else if (turnPartEnding == Game.DEVELOPMENT) {
@@ -122,7 +129,8 @@ public class MainWindow extends JFrame {
 			cities.buyWorkers();
 			cities.turnPartIsThis(false);
 			developments.turnPartIsThis(true);
-			// TODO: monuments.buyWorkers();
+			monuments.buyWorkers();
+			monuments.turnPartIsThis(false);
 			workersLeft.setText("Workers left: 0");
 			updateTotalScore();
 		} else
@@ -163,12 +171,12 @@ public class MainWindow extends JFrame {
 	public void updateWorkersAvailable() {
 		//TODO: subtract monument workers also
 		int workersAvailable = g.getPlayer(g.getCurrentPlayer())
-				.getWorkersAvailable()-cities.getTotalSelectedWorkers();
+				.getWorkersAvailable()-cities.getTotalSelectedWorkers()-monuments.getTotalSelectedWorkers();
 		
 		workersLeft.setText("Workers left: "
 				+ workersAvailable );
 		
 		cities.setWorkersLeftZero(workersAvailable == 0);
-		//TODO: monuments.setWorkersLeftZero(workersAvailable==0);
+		monuments.setWorkersLeftZero(workersAvailable==0);
 	}
 }
