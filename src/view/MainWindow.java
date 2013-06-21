@@ -37,7 +37,9 @@ public class MainWindow extends JFrame {
 	
 	private JLabel workersLeft, totalScore;
 	
+
 	private MonumentPanel monuments;
+
 
 	public MainWindow() {
 		// create window
@@ -57,12 +59,6 @@ public class MainWindow extends JFrame {
 		// create game
 		g = new Game(new String[] { "1", "2"});//, "3", "4" });
 		
-		//TODO: take this out later
-		for (int i=0; i<g.getNumPlayers(); i++){
-			for (int j=3; j<7; j++){
-				g.getPlayer(i).buyCityWorkers(15, j);
-			}
-		}
 
 		turnObservers = new ArrayList<TurnObserver>();
 
@@ -73,7 +69,7 @@ public class MainWindow extends JFrame {
 		dice = new DicePanel(g);
 		turnObservers.add(dice);
 		center.add(dice, BorderLayout.NORTH);
-		resources = new ResourcesPanel(g);
+		resources = new ResourcesPanel(g, this);
 		turnObservers.add(resources);
 		center.add(resources, BorderLayout.WEST);
 		developments = new DevelopmentsPanel(g);
@@ -124,8 +120,14 @@ public class MainWindow extends JFrame {
 			updateTotalScore();
 		} else if (turnPartEnding == Game.DEVELOPMENT) {
 			developments.buyDevelopment();
+			List<Integer> ints = resources.getSelectedResources();
+			for (int i = 0; i < ints.size(); i++){
+				g.getPlayer(g.getCurrentPlayer()).removeResource(ints.get(i));
+			}
 			developments.turnPartIsThis(false);
 			updateTotalScore();
+			updateResources();
+			resources.updateTurnMoney();
 		} else if (turnPartEnding == Game.BUILD) {
 			cities.buyWorkers();
 			cities.turnPartIsThis(false);
@@ -145,6 +147,13 @@ public class MainWindow extends JFrame {
 	private void updateResources() {
 		resources.updateResources();
 	}
+	
+	public void updateDevelopments(){
+		if (g.getCurrentTurnPart() == Game.DEVELOPMENT){
+			developments.setDevelopmentChecks(true);
+			developments.updateDevelopmentChecks();
+		}
+	}
 
 	private void doNewTurnThings() {
 		this.setTitle("Roll Through the Ages - Player: "
@@ -153,6 +162,7 @@ public class MainWindow extends JFrame {
 		for (TurnObserver to : turnObservers) {
 			to.doNewTurnThings();
 		}
+		resources.updateSelected();
 	}
 
 	public class ContinueListener implements ActionListener {
@@ -174,7 +184,6 @@ public class MainWindow extends JFrame {
 	}
 
 	public void updateWorkersAvailable() {
-		//TODO: subtract monument workers also
 		int workersAvailable = g.getPlayer(g.getCurrentPlayer())
 				.getWorkersAvailable()-cities.getTotalSelectedWorkers()-monuments.getTotalSelectedWorkers();
 		
@@ -184,4 +193,6 @@ public class MainWindow extends JFrame {
 		cities.setWorkersLeftZero(workersAvailable == 0);
 		monuments.setWorkersLeftZero(workersAvailable==0);
 	}
+	
+	
 }

@@ -294,6 +294,14 @@ public class Player {
 				+ resources.getAmount(PlayerResources.WOOD) + "\nFood: "
 				+ resources.getAmount(PlayerResources.FOOD);
 	}
+	
+	public void removeResource(int resource){
+		resources.changeAmount(resource, resources.getAmount(resource) * (-1));
+	}
+	
+	public void bought(int amount){
+		turnMoney -= amount;
+	}
 
 	/** Returns the amount of food the player has */
 	public int getFood() {
@@ -372,9 +380,19 @@ public class Player {
 		addFood(roller.getFood());
 		workersAvailable = roller.getWorkers();
 		turnMoney = roller.getCoin();
-		for (int i = 0; i < 5; i++) {
-			turnMoney += resources.getWorth(i);
-		}
+		
+		//TODO: comment this part out!!!!
+//		for (int i = 0; i < 5; i++) {
+//			turnMoney += resources.getWorth(i);
+//		}
+	}
+	
+	public void addResourceToTurnMoney(int resource){
+		turnMoney += resources.getWorth(resource);
+	}
+	
+	public void removeResourceToTurnMoney(int resource){
+		turnMoney -= resources.getWorth(resource);
 	}
 
 	protected void processDisasters() {
