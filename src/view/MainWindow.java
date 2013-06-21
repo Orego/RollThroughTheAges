@@ -33,7 +33,7 @@ public class MainWindow extends JFrame {
 
 	private List<TurnObserver> turnObservers;
 	
-	private JLabel workersLeft;
+	private JLabel workersLeft, totalScore;
 
 	public MainWindow() {
 		// create window
@@ -43,9 +43,12 @@ public class MainWindow extends JFrame {
 		this.setResizable(false);
 		this.setBackground(Color.WHITE);
 
-		// title picture
-		this.add(new JLabel(new ImageIcon("Images/title.jpg")),
-				BorderLayout.NORTH);
+		// title picture/total score
+		JPanel titlePanel = new JPanel();
+		titlePanel.add(new JLabel(new ImageIcon("Images/title.jpg")));
+		totalScore = new JLabel("Player score: 0");
+		titlePanel.add(totalScore);
+		this.add(titlePanel,BorderLayout.NORTH);
 
 		// create game
 		g = new Game(new String[] { "1", "2", "3", "4" });
@@ -100,7 +103,9 @@ public class MainWindow extends JFrame {
 			workersLeft.setText("Workers left: "+g.getPlayer(g.getCurrentPlayer()).getWorkersAvailable());
 		} else if (turnPartEnding == Game.FEED_DISASTERS) {
 			// dice recorded, so update resources
+			g.processDisasters();
 			cities.turnPartIsThis(true);
+			totalScore.setText("Player score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
 			updateResources();
 		} else if (turnPartEnding == Game.DEVELOPMENT) {
 			developments.buyDevelopment();
@@ -122,13 +127,11 @@ public class MainWindow extends JFrame {
 	private void doNewTurnThings() {
 		this.setTitle("Roll Through the Ages - Player: "
 				+ g.getPlayer(g.getCurrentPlayer()).getName());
+		totalScore.setText("Total score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
 		for (TurnObserver to : turnObservers) {
 			to.doNewTurnThings();
 		}
-
 	}
-	
-	
 
 	public class ContinueListener implements ActionListener {
 
@@ -137,7 +140,6 @@ public class MainWindow extends JFrame {
 			g.nextTurnPart();
 			updatePanel();
 		}
-
 	}
 
 	public static void main(String[] args) {

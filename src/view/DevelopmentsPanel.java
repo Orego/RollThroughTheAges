@@ -124,6 +124,9 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 				developments[i].setSelected(false);
 				developments[i].setEnabled(true);
 			}
+			if (DevelopmentList.DEVELOPMENT_COSTS[i]>gamestate.getPlayer(gamestate.getCurrentPlayer()).getTurnMoney()){
+				developments[i].setEnabled(false);
+			}
 		}
 	}
 	

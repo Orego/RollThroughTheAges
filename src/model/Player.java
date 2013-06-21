@@ -33,8 +33,12 @@ public class Player {
 
 	/** Holds the list of developments the player holds. */
 	private DevelopmentList developments;
-	
+
 	private int workersAvailable;
+
+	private int turnMoney;
+
+	private int numPlayers;
 
 	/**
 	 * @param name
@@ -42,6 +46,7 @@ public class Player {
 	 */
 	public Player(String name, int numPlayers) {
 		this.name = name;
+		this.numPlayers = numPlayers;
 		initializeCities();
 		initializeMonuments(numPlayers);
 		dice = new ArrayList<Die>();
@@ -58,7 +63,10 @@ public class Player {
 				+ getBonuses() - disasterCount;
 	}
 
-	/** Returns the score from bonuses (gotten through architecture/empire developments). */
+	/**
+	 * Returns the score from bonuses (gotten through architecture/empire
+	 * developments).
+	 */
 	private int getBonuses() {
 		int bonus = 0;
 		if (developments.isDevelopmentBought(DevelopmentList.ARCHITECTURE)) {
@@ -77,8 +85,8 @@ public class Player {
 		}
 		return bonus;
 	}
-	
-	public void buyDevelopment(int development){
+
+	public void buyDevelopment(int development) {
 		developments.buyDevelopment(development);
 	}
 
@@ -90,14 +98,14 @@ public class Player {
 		}
 		return i2;
 	}
-	
+
 	/** Updates disaster count. */
-	public void addDisasters(int numDisastersToAdd){
-		disasterCount+=numDisastersToAdd;
+	public void addDisasters(int numDisastersToAdd) {
+		disasterCount += numDisastersToAdd;
 	}
-	
+
 	/** Returns disaster count. */
-	public int getDisasterCount(){
+	public int getDisasterCount() {
 		return disasterCount;
 	}
 
@@ -202,7 +210,8 @@ public class Player {
 	}
 
 	/**
-	 * Adds workers to a particular city.  There's no check to make sure the number of workers is less than workers available.
+	 * Adds workers to a particular city. There's no check to make sure the
+	 * number of workers is less than workers available.
 	 * 
 	 * @param workers
 	 *            the amount of workers added
@@ -212,7 +221,7 @@ public class Player {
 	public int buyCityWorkers(int workers, int city) {
 		boolean isFull = cities[city].isFull();
 		int over = cities[city].addWorkers(workers);
-		if (!isFull && cities[city].isFull()){
+		if (!isFull && cities[city].isFull()) {
 			dice.add(new Die());
 		}
 		workersAvailable = workersAvailable - (workers - over);
@@ -220,8 +229,10 @@ public class Player {
 	}
 
 	/**
-	 * @param workers The number of workers to add to the specified monument.
-	 * @param monument The index associated with the monument.
+	 * @param workers
+	 *            The number of workers to add to the specified monument.
+	 * @param monument
+	 *            The index associated with the monument.
 	 * @return The number of workers over the monument's upper limit.
 	 */
 	public int buyMonumentWorkers(int workers, int monument) {
@@ -236,14 +247,14 @@ public class Player {
 		}
 		return str;
 	}
-	
-	public boolean[] getMonumentsPlayerHas(){
-		boolean[] b = new boolean[monuments.length]; 
-		for (int i=0; i<monuments.length; i++)
+
+	public boolean[] getMonumentsPlayerHas() {
+		boolean[] b = new boolean[monuments.length];
+		for (int i = 0; i < monuments.length; i++)
 			b[i] = monuments[i].isFull();
 		return b;
 	}
-	
+
 	/** Returns monuments, even if not completed, but only if part of the game */
 	public Structure getMonument(int i) {
 		return monuments[i];
@@ -287,9 +298,9 @@ public class Player {
 	public int getFood() {
 		return resources.getAmount(PlayerResources.FOOD);
 	}
-	
+
 	/** Get player's resources. */
-	public PlayerResources getPlayerResources(){
+	public PlayerResources getPlayerResources() {
 		return resources;
 	}
 
@@ -337,14 +348,16 @@ public class Player {
 				.println("Num workers left after we add 4 workers to city #4 (max population = 3)? "
 						+ p.getCity(3).addWorkers(4));
 		System.out.println("Is City #4 full? " + p.getCity(3).isFull());
-		
-		p = new Player("",1);
-		System.out.println("\nTotal score for new player: "+p.getTotalScore());
+
+		p = new Player("", 1);
+		System.out
+				.println("\nTotal score for new player: " + p.getTotalScore());
 		p.buyDevelopment(DevelopmentList.EMPIRE);
-		System.out.println("Buy empire (8 + 1 bonus/city): "+p.getTotalScore());
+		System.out.println("Buy empire (8 + 1 bonus/city): "
+				+ p.getTotalScore());
 		p.addDisasters(2);
-		System.out.println("Lost two disaster points: "+p.getTotalScore());
-		System.out.println("Num disaster points: "+p.getDisasterCount());
+		System.out.println("Lost two disaster points: " + p.getTotalScore());
+		System.out.println("Num disaster points: " + p.getDisasterCount());
 
 		Scanner scan = new Scanner(System.in);
 		System.out.print("\nChoose a player name: ");
@@ -353,13 +366,54 @@ public class Player {
 
 	}
 
-	public void doneRolling() {
+	protected void doneRolling() {
 		addGoods(roller.getGoods());
 		addFood(roller.getFood());
 		workersAvailable = roller.getWorkers();
+		turnMoney = roller.getCoin();
+		for (int i = 0; i < 5; i++) {
+			turnMoney += resources.getWorth(i);
+		}
+	}
+
+	protected void processDisasters() {
+		switch (roller.getSkulls()) {
+		case 2:
+			if (!developments.isDevelopmentBought(DevelopmentList.IRRIGATION))
+				disasterCount += 2;
+			return;
+		case 4:
+			if (!monuments[(6 + numPlayers) / 2].isFull())
+				disasterCount += 4;
+			return;
+		default:
+			// cases 3 and 5 should be dealt with in game
+			return;
+		}
 	}
 	
-	public int getWorkersAvailable(){
+	public int getSkulls(){
+		return roller.getSkulls();
+	}
+	
+	public void infectWithPestilence(){
+		if (!developments.isDevelopmentBought(DevelopmentList.MEDICINE))
+			disasterCount += 3;
+		return;
+	}
+	
+	/** This method has no check; that is for game to do. It makes the player lose all goods. */
+	public void inflictRevolt(){
+		for (int i=0; i<5; i++){
+			resources.changeAmount(i, -resources.getAmount(i));
+		}
+	}
+
+	public int getWorkersAvailable() {
 		return workersAvailable;
+	}
+
+	public int getTurnMoney() {
+		return turnMoney;
 	}
 }
