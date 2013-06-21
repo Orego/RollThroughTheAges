@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,8 +29,12 @@ public class MonumentPanel extends JPanel {
 	/** Holds information about the state of the game */
 	private Game gamestate;
 	
+	/** Holds all of the checkboxes for the monuments */
+	private JCheckBox[] checkboxes;
+	
 	public MonumentPanel(Game game){
 		gamestate = game;
+		checkboxes = new JCheckBox[63];
 		this.setLayout(new GridBagLayout());
 		this.setBackground(Color.white);
 		GridBagConstraints c = new GridBagConstraints();
@@ -94,6 +99,327 @@ public class MonumentPanel extends JPanel {
 			panels[i].repaint();
 		}
 		
+		// checkboxes for the temple
+		checkboxes[0] = new JCheckBox();
+		panels[0].add(checkboxes[0], 0);
+		checkboxes[0].setBounds(18, 10, 25, 25);
+		panels[0].repaint();
+		
+		checkboxes[1] = new JCheckBox();
+		panels[0].add(checkboxes[1], 0);
+		checkboxes[1].setBounds(7, 26, 25, 25);
+		panels[0].repaint();
+
+		checkboxes[2] = new JCheckBox();
+		panels[0].add(checkboxes[2], 0);
+		checkboxes[2].setBounds(26, 26, 25, 25);
+		panels[0].repaint();
+		
+		//checkboxes for stone circle
+		checkboxes[3] = new JCheckBox();
+		panels[1].add(checkboxes[3], 0);
+		checkboxes[3].setBounds(9, 15, 25, 25);
+		panels[1].repaint();
+		
+		checkboxes[4] = new JCheckBox();
+		panels[1].add(checkboxes[4], 0);
+		checkboxes[4].setBounds(25, 1, 25, 25);
+		panels[1].repaint();
+		
+		checkboxes[5] = new JCheckBox();
+		panels[1].add(checkboxes[5], 0);
+		checkboxes[5].setBounds(37, 15, 25, 25);
+		panels[1].repaint();
+		
+		checkboxes[6] = new JCheckBox();
+		panels[1].add(checkboxes[6], 0);
+		checkboxes[6].setBounds(52, 1, 25, 25);
+		panels[1].repaint();
+		
+		checkboxes[7] = new JCheckBox();
+		panels[1].add(checkboxes[7], 0);
+		checkboxes[7].setBounds(65, 15, 25, 25);
+		panels[1].repaint();
+		
+		//Checkboxes for temple
+		checkboxes[8] = new JCheckBox();
+		panels[2].add(checkboxes[8], 0);
+		checkboxes[8].setBounds(28, 5, 25, 25);
+		panels[2].repaint();
+		
+		checkboxes[9] = new JCheckBox();
+		panels[2].add(checkboxes[9], 0);
+		checkboxes[9].setBounds(9, 20, 25, 25);
+		panels[2].repaint();
+		
+		checkboxes[10] = new JCheckBox();
+		panels[2].add(checkboxes[10], 0);
+		checkboxes[10].setBounds(28, 20, 25, 25);
+		panels[2].repaint();
+		
+		checkboxes[11] = new JCheckBox();
+		panels[2].add(checkboxes[11], 0);
+		checkboxes[11].setBounds(47, 20, 25, 25);
+		panels[2].repaint();
+		
+		checkboxes[12] = new JCheckBox();
+		panels[2].add(checkboxes[12], 0);
+		checkboxes[12].setBounds(9, 35, 25, 25);
+		panels[2].repaint();
+		
+		checkboxes[13] = new JCheckBox();
+		panels[2].add(checkboxes[13], 0);
+		checkboxes[13].setBounds(28, 35, 25, 25);
+		panels[2].repaint();
+		
+		checkboxes[14] = new JCheckBox();
+		panels[2].add(checkboxes[14], 0);
+		checkboxes[14].setBounds(47, 35, 25, 25);
+		panels[2].repaint();
+		
+		//Checkboxes for obelisk
+		checkboxes[15] = new JCheckBox();
+		panels[3].add(checkboxes[15], 0);
+		checkboxes[15].setBounds(0, 1, 25, 25);
+		panels[3].repaint();
+		
+		checkboxes[16] = new JCheckBox();
+		panels[3].add(checkboxes[16], 0);
+		checkboxes[16].setBounds(0, 18, 25, 25);
+		panels[3].repaint();
+		
+		checkboxes[17] = new JCheckBox();
+		panels[3].add(checkboxes[17], 0);
+		checkboxes[17].setBounds(0, 35, 25, 25);
+		panels[3].repaint();
+		
+		checkboxes[18] = new JCheckBox();
+		panels[3].add(checkboxes[18], 0);
+		checkboxes[18].setBounds(0, 52, 25, 25);
+		panels[3].repaint();
+		
+		checkboxes[19] = new JCheckBox();
+		panels[3].add(checkboxes[19], 0);
+		checkboxes[19].setBounds(0, 69, 25, 25);
+		panels[3].repaint();
+		
+		checkboxes[20] = new JCheckBox();
+		panels[3].add(checkboxes[20], 0);
+		checkboxes[20].setBounds(0, 86, 25, 25);
+		panels[3].repaint();
+		
+		checkboxes[21] = new JCheckBox();
+		panels[3].add(checkboxes[21], 0);
+		checkboxes[21].setBounds(0, 103, 25, 25);
+		panels[3].repaint();
+		
+		checkboxes[22] = new JCheckBox();
+		panels[3].add(checkboxes[22], 0);
+		checkboxes[22].setBounds(0, 120, 25, 25);
+		panels[3].repaint();
+		
+		checkboxes[23] = new JCheckBox();
+		panels[3].add(checkboxes[23], 0);
+		checkboxes[23].setBounds(0, 136, 25, 25);
+		panels[3].repaint();
+		
+		//checkboxes for hanging gardens
+		checkboxes[24] = new JCheckBox();
+		panels[4].add(checkboxes[24], 0);
+		checkboxes[24].setBounds(28, 7, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[25] = new JCheckBox();
+		panels[4].add(checkboxes[25], 0);
+		checkboxes[25].setBounds(47, 7, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[26] = new JCheckBox();
+		panels[4].add(checkboxes[26], 0);
+		checkboxes[26].setBounds(10, 24, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[27] = new JCheckBox();
+		panels[4].add(checkboxes[27], 0);
+		checkboxes[27].setBounds(28, 24, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[28] = new JCheckBox();
+		panels[4].add(checkboxes[28], 0);
+		checkboxes[28].setBounds(47, 24, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[29] = new JCheckBox();
+		panels[4].add(checkboxes[29], 0);
+		checkboxes[29].setBounds(65, 24, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[30] = new JCheckBox();
+		panels[4].add(checkboxes[30], 0);
+		checkboxes[30].setBounds(2, 40, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[31] = new JCheckBox();
+		panels[4].add(checkboxes[31], 0);
+		checkboxes[31].setBounds(20, 40, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[32] = new JCheckBox();
+		panels[4].add(checkboxes[32], 0);
+		checkboxes[32].setBounds(38, 40, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[33] = new JCheckBox();
+		panels[4].add(checkboxes[33], 0);
+		checkboxes[33].setBounds(56, 40, 25, 25);
+		panels[4].repaint();
+		
+		checkboxes[34] = new JCheckBox();
+		panels[4].add(checkboxes[34], 0);
+		checkboxes[34].setBounds(74, 40, 25, 25);
+		panels[4].repaint();
+		
+		//checkboxes for wall
+		checkboxes[35] = new JCheckBox();
+		panels[5].add(checkboxes[35], 0);
+		checkboxes[35].setBounds(2, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[36] = new JCheckBox();
+		panels[5].add(checkboxes[36], 0);
+		checkboxes[36].setBounds(22, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[37] = new JCheckBox();
+		panels[5].add(checkboxes[37], 0);
+		checkboxes[37].setBounds(42, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[38] = new JCheckBox();
+		panels[5].add(checkboxes[38], 0);
+		checkboxes[38].setBounds(62, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[39] = new JCheckBox();
+		panels[5].add(checkboxes[39], 0);
+		checkboxes[39].setBounds(82, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[40] = new JCheckBox();
+		panels[5].add(checkboxes[40], 0);
+		checkboxes[40].setBounds(102, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[41] = new JCheckBox();
+		panels[5].add(checkboxes[41], 0);
+		checkboxes[41].setBounds(122, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[42] = new JCheckBox();
+		panels[5].add(checkboxes[42], 0);
+		checkboxes[42].setBounds(142, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[43] = new JCheckBox();
+		panels[5].add(checkboxes[43], 0);
+		checkboxes[43].setBounds(162, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[44] = new JCheckBox();
+		panels[5].add(checkboxes[44], 0);
+		checkboxes[44].setBounds(182, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[45] = new JCheckBox();
+		panels[5].add(checkboxes[45], 0);
+		checkboxes[45].setBounds(202, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[46] = new JCheckBox();
+		panels[5].add(checkboxes[46], 0);
+		checkboxes[46].setBounds(222, 15, 25, 25);
+		panels[5].repaint();
+		
+		checkboxes[47] = new JCheckBox();
+		panels[5].add(checkboxes[47], 0);
+		checkboxes[47].setBounds(242, 15, 25, 25);
+		panels[5].repaint();
+		
+		//checkboxes for the great pyramid....finally
+		checkboxes[48] = new JCheckBox();
+		panels[6].add(checkboxes[48], 0);
+		checkboxes[48].setBounds(42, 12, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[49] = new JCheckBox();
+		panels[6].add(checkboxes[49], 0);
+		checkboxes[49].setBounds(34, 29, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[50] = new JCheckBox();
+		panels[6].add(checkboxes[50], 0);
+		checkboxes[50].setBounds(50, 29, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[51] = new JCheckBox();
+		panels[6].add(checkboxes[51], 0);
+		checkboxes[51].setBounds(26, 46, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[52] = new JCheckBox();
+		panels[6].add(checkboxes[52], 0);
+		checkboxes[52].setBounds(42, 46, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[53] = new JCheckBox();
+		panels[6].add(checkboxes[53], 0);
+		checkboxes[53].setBounds(58, 46, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[54] = new JCheckBox();
+		panels[6].add(checkboxes[54], 0);
+		checkboxes[54].setBounds(18, 63, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[55] = new JCheckBox();
+		panels[6].add(checkboxes[55], 0);
+		checkboxes[55].setBounds(34, 63, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[56] = new JCheckBox();
+		panels[6].add(checkboxes[56], 0);
+		checkboxes[56].setBounds(50, 63, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[57] = new JCheckBox();
+		panels[6].add(checkboxes[57], 0);
+		checkboxes[57].setBounds(66, 63, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[58] = new JCheckBox();
+		panels[6].add(checkboxes[58], 0);
+		checkboxes[58].setBounds(10, 80, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[59] = new JCheckBox();
+		panels[6].add(checkboxes[59], 0);
+		checkboxes[59].setBounds(26, 80, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[60] = new JCheckBox();
+		panels[6].add(checkboxes[60], 0);
+		checkboxes[60].setBounds(42, 80, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[61] = new JCheckBox();
+		panels[6].add(checkboxes[61], 0);
+		checkboxes[61].setBounds(58, 80, 25, 25);
+		panels[6].repaint();
+		
+		checkboxes[62] = new JCheckBox();
+		panels[6].add(checkboxes[62], 0);
+		checkboxes[62].setBounds(74, 80, 25, 25);
+		panels[6].repaint();
 	}
 	
 	public static void main(String[] args){
