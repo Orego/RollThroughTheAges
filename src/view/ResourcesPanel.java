@@ -3,6 +3,7 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -57,7 +58,13 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		this.add(new JLabel("Amount:"));
 		this.add(new JLabel("Worth:"));
 		for (int i = 4; i >= 0; i--) {
-			this.add(new JLabel(RESOURCE_IMAGES[i]));
+			JButton button = new JButton(RESOURCE_IMAGES[i]);
+			button.setFocusPainted(false);
+			button.setMargin(new Insets(0, 0, 0, 0));
+			button.setContentAreaFilled(false);
+			button.setBorderPainted(false);
+			button.setOpaque(false);
+			this.add(button);
 			amountLabel[i] = new JLabel("0");
 			this.add(amountLabel[i]);
 			worthLabel[i] = new JLabel("0");
