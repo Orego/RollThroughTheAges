@@ -124,7 +124,15 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 				developments[i].setSelected(false);
 				developments[i].setEnabled(true);
 			}
+			if (DevelopmentList.DEVELOPMENT_COSTS[i]>gamestate.getPlayer(gamestate.getCurrentPlayer()).getTurnMoney()){
+				developments[i].setEnabled(false);
+			}
 		}
+	}
+	
+	private void setDevelopmentChecks(boolean enabled){
+		for (int i=0; i<developments.length; i++)
+			developments[i].setEnabled(enabled);
 	}
 	
 	private class BuyListener implements ActionListener {
@@ -190,6 +198,16 @@ public class DevelopmentsPanel extends JPanel implements TurnObserver{
 	@Override
 	public void doNewTurnThings() {
 		updateDevelopmentChecks();
+		setDevelopmentChecks(false);
+	}
+
+	@Override
+	public void turnPartIsThis(boolean thisTurnPart) {
+		if (thisTurnPart){
+			updateDevelopmentChecks();
+		}
+		else
+			setDevelopmentChecks(false);
 	}
 	
 }

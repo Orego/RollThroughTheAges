@@ -20,23 +20,21 @@ public class Game {
 
 	/** holds current position */
 	private int current_turn_part;
-	
+
 	/** Turn constants. */
-	public static final int ROLL_DICE = 0, FEED_DISASTERS = 1, BUILD = 2, DEVELOPMENT = 3, DISCARD = 4;
+	public static final int ROLL_DICE = 0, FEED_DISASTERS = 1, BUILD = 2,
+			DEVELOPMENT = 3, DISCARD = 4;
 
 	/** The names of the different turn parts. */
 	public static final String[] TURN_PARTS = {
 			"Roll dice and collect goods and food",
-			"Feed cities resolve disasters",
-			"Build cities and / or monuments", "Option to buy 1 development",
-			"Discard goods in excess of 6" };
-	
+			"Feed cities resolve disasters", "Build cities and / or monuments",
+			"Option to buy 1 development", "Discard goods in excess of 6" };
+
 	/** The names of the different turn parts. */
-	public static final String[] TURN_END_TEXT = {
-			"Done rolling",
-			"Done feeding cities",
-			"Done building stuff", "Done buying development",
-			"Done discarding goods" };
+	public static final String[] TURN_END_TEXT = { "Done rolling",
+			"Done feeding cities", "Done building stuff",
+			"Done buying development", "Done discarding goods" };
 
 	/**
 	 * 
@@ -107,11 +105,13 @@ public class Game {
 		// before starting next turn, do the following
 		// update monuments to indicate if it was the first one built
 		for (int m = 0; m < getPlayer(0).getMonumentsPlayerHas().length; m++) {
-			if ( (!(getPlayer(currentplayer).getMonument(m).getOtherPlayerHasFinished()))
-					&& (getPlayer(currentplayer).getMonumentsPlayerHas()[m]) ) {
+			if ((!(getPlayer(currentplayer).getMonument(m)
+					.getOtherPlayerHasFinished()))
+					&& (getPlayer(currentplayer).getMonumentsPlayerHas()[m])) {
 				for (int i = 0; i < getNumPlayers(); i++) {
 					if (i != currentplayer) {
-						getPlayer(i).getMonument(m).setOtherPlayerHasFinished(true);
+						getPlayer(i).getMonument(m).setOtherPlayerHasFinished(
+								true);
 					}
 				}
 			}
@@ -122,6 +122,7 @@ public class Game {
 		if ((currentplayer == 0) && isEndofGame()) {
 			return false;
 		}
+
 		return true;
 	}
 
@@ -225,10 +226,11 @@ public class Game {
 			System.out.println("Player " + g.getPlayer(i).getName()
 					+ " has score " + g.getPlayer(i).getTotalScore());
 		}
-		
+
 		Game g2 = new Game(playerNames);
-		System.out.println("let's start new game has the following number of player(s): "
-				+ g2.getNumPlayers());
+		System.out
+				.println("let's start new game has the following number of player(s): "
+						+ g2.getNumPlayers());
 		System.out.println("Their names are " + g2.getPlayerNames());
 
 		System.out.println("\nGame 2");
@@ -236,7 +238,7 @@ public class Game {
 				+ " buys monument 2");
 		g2.getPlayer(0).buyMonumentWorkers(15, 1);
 		g2.nextTurn();
-		if(g.getNumPlayers() > 1){
+		if (g.getNumPlayers() > 1) {
 			System.out.println("Player " + g2.getPlayer(1).getName()
 					+ " buys all monuments incl first one");
 			for (int i = 0; i < g2.getPlayer(1).getMonumentsPlayerHas().length; i++) {
@@ -244,10 +246,10 @@ public class Game {
 			}
 		}
 		g2.nextTurn();
-		for (int i=0; i<g2.getNumPlayers();i++){
+		for (int i = 0; i < g2.getNumPlayers(); i++) {
 			System.out.println(g2.getPlayer(i).getMonumentsInfo());
 		}
-		
+
 		for (int i = 2; i < g2.getNumPlayers(); i++) {
 			System.out.println("Player "
 					+ g2.getPlayer((i + 1) % g2.getNumPlayers()).getName()
@@ -257,6 +259,34 @@ public class Game {
 		for (int i = 0; i < g2.getNumPlayers(); i++) {
 			System.out.println("Player " + g2.getPlayer(i).getName()
 					+ " has score " + g2.getPlayer(i).getTotalScore());
+		}
+	}
+
+	public void doneRolling() {
+		players.get(currentplayer).doneRolling();
+	}
+
+	public void processDisasters() {
+		players.get(currentplayer).processDisasters();
+		
+		int numSkulls = players.get(currentplayer).getSkulls();
+		if (numSkulls == 3) {
+			for (int i = 0; i < players.size(); i++) {
+				if (i != currentplayer || players.size() == 1) {
+					players.get(i).infectWithPestilence();
+				}
+			}
+		} else if (numSkulls >= 5) {
+			if (!players.get(currentplayer).getDevelopementList().isDevelopmentBought(DevelopmentList.RELIGION)){
+				players.get(currentplayer).inflictRevolt();
+			}
+			else{
+				for (int i = 0; i < players.size(); i++) {
+					if (i != currentplayer) {
+						players.get(i).inflictRevolt();
+					}
+				}
+			}
 		}
 	}
 }

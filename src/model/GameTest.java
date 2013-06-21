@@ -71,7 +71,44 @@ public class GameTest {
 		assertEquals(1, g.getPlayer(0).getTotalScore());
 		assertEquals(0, g.getPlayer(2).getTotalScore());
 		assertEquals(0, g.getPlayer(3).getTotalScore());
-
 	}
 
+	@Test
+	public void testDisasters() {
+		assertEquals(0, g4.getPlayer(g4.getCurrentPlayer()).getTotalScore());
+
+		for (int i = 0; i < 4 * 4; i++) {
+			g4.getPlayer(i / 4).buyCityWorkers(6, 3 + i % 4);
+		}
+
+		// make drought happen
+		do {
+			g4.rollPlayersDice(0);
+		} while (g4.getPlayer(g4.getCurrentPlayer()).getSkulls() != 2);
+		g4.doneRolling();
+		g4.processDisasters();
+		assertEquals(-2, g4.getPlayer(g4.getCurrentPlayer()).getTotalScore());
+		g4.getPlayer(g4.getCurrentPlayer()).buyDevelopment(
+				DevelopmentList.MEDICINE);
+		assertEquals(1, g4.getPlayer(g4.getCurrentPlayer()).getTotalScore());
+		g4.nextTurn();
+
+		// make pestilence happen
+		// make drought happen
+		do {
+			g4.rollPlayersDice(1);
+		} while (g4.getPlayer(g4.getCurrentPlayer()).getSkulls() != 3);
+		g4.doneRolling();
+		g4.processDisasters();
+		assertEquals(0, g4.getPlayer(g4.getCurrentPlayer()).getTotalScore());
+		assertEquals(-3, g4.getPlayer(2).getTotalScore());
+		assertEquals(-3, g4.getPlayer(3).getTotalScore());
+		assertEquals(1, g4.getPlayer(0).getTotalScore());
+		// g4.getPlayer(g4.getCurrentPlayer()).buyDevelopment(
+		// DevelopmentList.MEDICINE);
+		// assertEquals(1, g4.getPlayer(g4.getCurrentPlayer()).getTotalScore());
+		g4.nextTurn();
+		
+		
+	}
 }

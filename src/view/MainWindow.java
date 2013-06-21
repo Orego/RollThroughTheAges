@@ -32,6 +32,8 @@ public class MainWindow extends JFrame {
 	private JButton continueBtn;
 
 	private List<TurnObserver> turnObservers;
+	
+	private JLabel workersLeft, totalScore;
 
 	public MainWindow() {
 		// create window
@@ -41,12 +43,22 @@ public class MainWindow extends JFrame {
 		this.setResizable(false);
 		this.setBackground(Color.WHITE);
 
-		// title picture
-		this.add(new JLabel(new ImageIcon("Images/title.jpg")),
-				BorderLayout.NORTH);
+		// title picture/total score
+		JPanel titlePanel = new JPanel();
+		titlePanel.add(new JLabel(new ImageIcon("Images/title.jpg")));
+		totalScore = new JLabel("Player score: 0");
+		titlePanel.add(totalScore);
+		this.add(titlePanel,BorderLayout.NORTH);
 
 		// create game
 		g = new Game(new String[] { "1", "2", "3", "4" });
+		
+		//TODO: take this out later
+		for (int i=0; i<g.getNumPlayers(); i++){
+			for (int j=3; j<7; j++){
+				g.getPlayer(i).buyCityWorkers(15, j);
+			}
+		}
 
 		turnObservers = new ArrayList<TurnObserver>();
 
@@ -69,8 +81,12 @@ public class MainWindow extends JFrame {
 
 		// cities/monuments panel
 		JPanel right = new JPanel();
-		cities = new CitiesPanel(g);
+		right.setLayout(new BorderLayout());
+		cities = new CitiesPanel(g,this);
 		right.add(cities, BorderLayout.NORTH);
+		workersLeft = new JLabel("Workers left: 0");
+		right.add(workersLeft,BorderLayout.CENTER);
+		
 		turnObservers.add(cities);
 		this.add(right, BorderLayout.EAST);
 
@@ -80,40 +96,54 @@ public class MainWindow extends JFrame {
 
 	public void updatePanel() {
 		continueBtn.setText(Game.TURN_END_TEXT[g.getCurrentTurnPart()]);
-		
-		int turnPartEnding = g.getCurrentTurnPart()-1;
-		
+
+		int turnPartEnding = g.getCurrentTurnPart() - 1;
+
 		// TODO: put discarding goods in
 		if (turnPartEnding == -1) {
 			doNewTurnThings();
-		} else if (turnPartEnding == Game.ROLL_DICE || turnPartEnding == Game.FEED_DISASTERS) {
+			dice.turnPartIsThis(true);
+		} else if (turnPartEnding == Game.ROLL_DICE) {
+			dice.turnPartIsThis(false);
 			// dice recorded, so update resources
 			updateResources();
+			workersLeft.setText("Workers left: "+g.getPlayer(g.getCurrentPlayer()).getWorkersAvailable());
+		} else if (turnPartEnding == Game.FEED_DISASTERS) {
+			// dice recorded, so update resources
+			g.processDisasters();
+			cities.turnPartIsThis(true);
+			updateResources();
+			updateTotalScore();
 		} else if (turnPartEnding == Game.DEVELOPMENT) {
 			developments.buyDevelopment();
+			developments.turnPartIsThis(false);
+			updateTotalScore();
 		} else if (turnPartEnding == Game.BUILD) {
 			cities.buyWorkers();
+			cities.turnPartIsThis(false);
+			developments.turnPartIsThis(true);
 			// TODO: monuments.buyWorkers();
+			workersLeft.setText("Workers left: 0");
+			updateTotalScore();
 		} else
 			updateResources();
-
-		if (g.getCurrentTurnPart() == 0) {
-			doNewTurnThings();
-		}
+	}
+	
+	private void updateTotalScore(){
+		totalScore.setText("Player score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
 	}
 
 	private void updateResources() {
-		dice.updateGame();
 		resources.updateResources();
 	}
 
 	private void doNewTurnThings() {
 		this.setTitle("Roll Through the Ages - Player: "
 				+ g.getPlayer(g.getCurrentPlayer()).getName());
+		totalScore.setText("Total score: "+g.getPlayer(g.getCurrentPlayer()).getTotalScore());
 		for (TurnObserver to : turnObservers) {
 			to.doNewTurnThings();
 		}
-
 	}
 
 	public class ContinueListener implements ActionListener {
@@ -123,11 +153,22 @@ public class MainWindow extends JFrame {
 			g.nextTurnPart();
 			updatePanel();
 		}
-
 	}
 
 	public static void main(String[] args) {
 		MainWindow window = new MainWindow();
 		window.pack();
+	}
+
+	public void updateWorkersAvailable() {
+		//TODO: subtract monument workers also
+		int workersAvailable = g.getPlayer(g.getCurrentPlayer())
+				.getWorkersAvailable()-cities.getTotalSelectedWorkers();
+		
+		workersLeft.setText("Workers left: "
+				+ workersAvailable );
+		
+		cities.setWorkersLeftZero(workersAvailable == 0);
+		//TODO: monuments.setWorkersLeftZero(workersAvailable==0);
 	}
 }

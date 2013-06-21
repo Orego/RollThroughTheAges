@@ -120,12 +120,13 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 	@Override
 	public void doNewTurnThings() {
 		updateResources();
+		this.setEnabled(false);
 	}
 
 
 	/** Updates the displayed amount and worth of resources. */
 	public void updateResources() {
-		//TODO: get this from player
+		//TODO: get granaries boolean from player
 		boolean granaries = false;
 		
 		PlayerResources r = game.getPlayer(game.getCurrentPlayer()).getPlayerResources();
@@ -158,6 +159,11 @@ public class ResourcesPanel extends JPanel implements TurnObserver {
 		}
 		this.totalAmount.setText("" + totalAmount);
 		this.totalWorth.setText("" + totalWorth);
+	}
+
+	@Override
+	public void turnPartIsThis(boolean thisTurnPart) {
+		this.setEnabled(thisTurnPart);
 	}
 
 }

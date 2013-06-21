@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import model.Game;
 
-public class CitiesPanel extends JPanel implements TurnObserver{
+public class CitiesPanel extends JPanel implements TurnObserver {
 
 	/** The images associated with the different cities. */
 	private static final ImageIcon[] CITY_IMAGES = {
@@ -26,24 +26,28 @@ public class CitiesPanel extends JPanel implements TurnObserver{
 			new ImageIcon("Images/city6.jpg"),
 			new ImageIcon("Images/city7.jpg") };
 
-	/** The images associated with the different full cities. */
-	private static final ImageIcon[] CITY_IMAGES_SELECTED = {
-			new ImageIcon("Images/city4selected.jpg"),
-			new ImageIcon("Images/city5selected.jpg"),
-			new ImageIcon("Images/city6selected.jpg"),
-			new ImageIcon("Images/city7selected.jpg") };
-
+	
+	/** The city images */
 	private JLabel[] cities;
+	
+	/** The checkboxes associated with workers */
 	private JCheckBox[] checkboxes;
+	
+	/** The current player*/
 	private static JLabel name;
+	
+	/** Holds information about the state of the game*/
 	private Game gamestate;
+
+	private MainWindow main;
 
 	/**
 	 * This initializes all of the graphic cities with their checkboxes to
 	 * determine the number of workers
 	 */
-	public CitiesPanel(Game game) {
+	public CitiesPanel(Game game, MainWindow main) {
 		gamestate = game;
+		this.main = main;
 		cities = new JLabel[4];
 		checkboxes = new JCheckBox[18];
 		this.setLayout(new GridBagLayout());
@@ -185,6 +189,10 @@ public class CitiesPanel extends JPanel implements TurnObserver{
 		panels[3].add(checkboxes[17], 0);
 		checkboxes[17].setBounds(30, 90, 25, 25);
 		panels[3].repaint();
+
+		for (int i = 0; i < checkboxes.length; i++) {
+			checkboxes[i].addActionListener(new CheckListener());
+		}
 	}
 
 	/**
@@ -234,13 +242,28 @@ public class CitiesPanel extends JPanel implements TurnObserver{
 		}
 	}
 
+	public int getTotalSelectedWorkers() {
+		int total = 0;
+		for (int i = 0; i < checkboxes.length; i++) {
+			if (checkboxes[i].isSelected() && checkboxes[i].isEnabled()) {
+				total++;
+			}
+		}
+		return total;
+	}
+
+	public void setWorkersLeftZero(boolean zero) {
+		for (int i = 0; i < checkboxes.length; i++)
+			if (!checkboxes[i].isSelected())
+				checkboxes[i].setEnabled(!zero);
+	}
+
 	/**
 	 * Updates the check boxes for the current player
 	 */
-	private void updateCityChecks() {
-		for (int i = 0; i < 18; i++){
+	private void updateCityChecksSelected() {
+		for (int i = 0; i < 18; i++) {
 			checkboxes[i].setSelected(false);
-			checkboxes[i].setEnabled(true);
 		}
 		for (int i = 3; i < 7; i++) {
 			int population = gamestate.getPlayer(gamestate.getCurrentPlayer())
@@ -254,30 +277,38 @@ public class CitiesPanel extends JPanel implements TurnObserver{
 					break;
 				case 4:
 					checkboxes[j + 3].setSelected(true);
-					checkboxes[j + 3].setEnabled(false);
+					checkboxes[j].setEnabled(false);
 					break;
 				case 5:
 					checkboxes[j + 7].setSelected(true);
-					checkboxes[j + 7].setEnabled(false);
+					checkboxes[j].setEnabled(false);
 					break;
 				case 6:
 					checkboxes[j + 12].setSelected(true);
-					checkboxes[j + 12].setEnabled(false);
+					checkboxes[j].setEnabled(false);
 					break;
 				}
 			}
-			
+
 		}
 	}
-	
-	
+
+	/** Call AFTER updateCityChecksSelected. */
+	private void updateCityChecksEnabled() {
+		for (int i = 0; i < 18; i++) {
+			if (!checkboxes[i].isSelected())
+				checkboxes[i].setEnabled(true);
+			else
+				checkboxes[i].setEnabled(false);
+		}
+	}
 
 	public static void main(String[] args) {
 		String[] names = { "Matt", "Candice" };
 		Game g = new Game(names);
 
 		JFrame frame = new JFrame();
-		CitiesPanel cPanel = new CitiesPanel(g);
+		CitiesPanel cPanel = new CitiesPanel(g, new MainWindow());
 		JPanel outerPanel = new JPanel();
 		outerPanel.setLayout(new BorderLayout());
 		outerPanel.add(cPanel, BorderLayout.CENTER);
@@ -303,42 +334,68 @@ public class CitiesPanel extends JPanel implements TurnObserver{
 		this.setBounds(0, 0, 200, 100);
 	}
 
+	/**
+	 *  Used for testing purposes
+	 */
 	public class CheckListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			System.out.println("First City " + getSelectedWorkersForCity(3));
-			System.out.println("Second City " + getSelectedWorkersForCity(4));
-			System.out.println("Third City " + getSelectedWorkersForCity(5));
-			System.out.println("Fourth City " + getSelectedWorkersForCity(6)
-					+ "\n");
-
+			main.updateWorkersAvailable();
+			// System.out.println("First City " + getSelectedWorkersForCity(3));
+			// System.out.println("Second City " +
+			// getSelectedWorkersForCity(4));
+			// System.out.println("Third City " + getSelectedWorkersForCity(5));
+			// System.out.println("Fourth City " + getSelectedWorkersForCity(6)
+			// + "\n");
 		}
-
 	}
 	
+	/** 
+	 *  Used in main to show customer progress
+	 */
 	public class BuyListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			buyWorkers();
 			gamestate.nextTurn();
-			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer()).getName() +"'s turn");
-			updateCityChecks();
-			
-			
-		}
-		
-	}
-	
-	public void buyWorkers(){
-		for(int i=3; i<7; i++){
-			gamestate.getPlayer(gamestate.getCurrentPlayer()).buyCityWorkers(getSelectedWorkersForCity(i), i);		
+			name.setText(gamestate.getPlayer(gamestate.getCurrentPlayer())
+					.getName() + "'s turn");
+
+			updateCityChecksSelected();
+			updateCityChecksEnabled();
 		}
 	}
 
+	public void buyWorkers() {
+		for (int i = 3; i < 7; i++) {
+			gamestate.getPlayer(gamestate.getCurrentPlayer()).buyCityWorkers(
+					getSelectedWorkersForCity(i), i);
+		}
+	}
+	
 	@Override
 	public void doNewTurnThings() {
-		updateCityChecks();
+		updateCityChecksSelected();
+		setChecksEnabled(false);
+	}
+
+	@Override
+	public void turnPartIsThis(boolean thisTurnPart) {
+		if (!thisTurnPart
+				|| gamestate.getPlayer(gamestate.getCurrentPlayer())
+						.getWorkersAvailable() == 0) {
+			setChecksEnabled(false);
+
+		} else {
+			updateCityChecksEnabled();
+
+		}
+	}
+
+	private void setChecksEnabled(boolean enabled) {
+		for (int i = 0; i < checkboxes.length; i++)
+			checkboxes[i].setEnabled(enabled);
 	}
 }
